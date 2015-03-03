@@ -42,15 +42,18 @@ int main(int argc, char **argv)
     }
     ret = pthread_create(&pid1, NULL, &thread1, NULL);
     if (ret < 0) {
+        pthread_mutex_destroy(&mutex);
         printf("[MAIN] 创建线程失败\n");
         return 0;
     }
     ret = pthread_create(&pid2, NULL, &thread2, NULL);
     if (ret < 0) {
+        pthread_mutex_destroy(&mutex);
         printf("[MAIN] 创建线程失败\n");
         return 0;
     }
     pthread_join(pid1, NULL);
     pthread_join(pid2, NULL);
+    pthread_mutex_destroy(&mutex);
     return 0;
 }
