@@ -19,3 +19,6 @@ TARGET_LINK_LIBRARIES(ts_extends xd)
 ADD_EXECUTABLE(ts_atomics ts_atomics.cpp)
 TARGET_LINK_LIBRARIES(ts_atomics xd)
 
+ADD_EXECUTABLE(ts_sema ts_sema.cpp)
+TARGET_LINK_LIBRARIES(ts_sema xd)
+

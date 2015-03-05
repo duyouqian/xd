@@ -7,5 +7,6 @@
 #include "types.h"
 #include "mutex.h"
 #include "condition.h"
+#include "sema.h"
 
 #endif // end xd_common_h
