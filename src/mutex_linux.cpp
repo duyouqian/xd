@@ -48,3 +48,7 @@ XDErrorCode XDMutexLinuxImp::unlock()
     return XDError::E_XD_SUCCESS;
 }
 
+pthread_mutex_t* XDMutexLinuxImp::getMutex()
+{
+    return (&mutex_);
+}

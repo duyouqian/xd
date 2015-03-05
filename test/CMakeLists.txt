@@ -10,3 +10,6 @@ TARGET_LINK_LIBRARIES(ts_log xd)
 ADD_EXECUTABLE(ts_mutex ts_mutex.cpp)
 TARGET_LINK_LIBRARIES(ts_mutex xd)
 
+ADD_EXECUTABLE(ts_cond ts_condition.cpp)
+TARGET_LINK_LIBRARIES(ts_cond xd)
+

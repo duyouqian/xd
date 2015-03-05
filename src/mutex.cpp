@@ -1,7 +1,7 @@
 #include "mutex.h"
 #include "error.h"
 
-XDGuardMutex::XDGuardMutex(XDIMutex *mutex)
+XDGuardMutex::XDGuardMutex(XDMutex *mutex)
             : mutex_(mutex)
             , isLocked_(false)
 {
