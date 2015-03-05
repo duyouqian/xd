@@ -31,4 +31,29 @@ private:
     #define NULL nullptr_t
 #endif
 
+// 强制内联
+#ifdef _MSC_VER_ // for MSVC
+    #define FORCEINLINE __forceinline
+#elif defined __GNUC__ // for gcc on Linux/Apple OS X
+    #define FORCEINLINE __inline__ __attribute__((always_inline))
+#else
+    #define FORCEINLINE
+#endif
+
+#ifdef __unix__
+    // unix or linux
+    #if defined(_LINUX64) || defined(_LP64)
+        #define PLATFORM_64BITS             1
+    #else
+        #define PLATFORM_64BITS            0 
+    #endif
+#elif __APPLE__
+    // mac os
+    #define PLATFORM_64BITS             0
+#else
+    // win
+    #define PLATFORM_64BITS             0
+#endif
+
+
 #endif // end xd_types_h

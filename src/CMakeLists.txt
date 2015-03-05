@@ -6,7 +6,8 @@ IF(UNIX)
     MESSAGE("UNIX")
     SET(BASE_SOURCE ${BASE_SOURCE} 
                     mutex_linux.cpp
-                    condition_linux.cpp)
+                    condition_linux.cpp
+                    atomics_linux.cpp)
 ELSEIF(APPLE)
     MESSAGE("APPLE")
 ELSEIF(WIN32)
