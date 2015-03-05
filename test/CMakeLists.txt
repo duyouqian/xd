@@ -7,3 +7,6 @@ TARGET_LINK_LIBRARIES(ts_main xd)
 ADD_EXECUTABLE(ts_log ts_log.cpp)
 TARGET_LINK_LIBRARIES(ts_log xd)
 
+ADD_EXECUTABLE(ts_mutex ts_mutex.cpp)
+TARGET_LINK_LIBRARIES(ts_mutex xd)
+
