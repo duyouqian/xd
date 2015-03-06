@@ -14,6 +14,8 @@ public:
     virtual XDErrorCode timedlock(uint32 millisecond) = 0;
     // 解锁
     virtual XDErrorCode unlock() = 0;
+    // 是否有效
+    virtual bool isValid() const = 0;
 };
 
 #endif // end xd_mutex_h

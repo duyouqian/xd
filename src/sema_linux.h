@@ -14,8 +14,10 @@ public:
     XDErrorCode wait();
     XDErrorCode timedwait(uint32 millisecond);
     XDErrorCode signal();
+    bool isValid() const;
 private:
     sem_t sem_;
+    bool isValid_;
 };
 
 #endif // end xd_semaimp_linux_h

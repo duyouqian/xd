@@ -14,9 +14,11 @@ public:
     XDErrorCode lock();
     XDErrorCode timedlock(uint32 millisecond);
     XDErrorCode unlock();
+    bool isValid() const;
     pthread_mutex_t* getMutex();
 private:
     pthread_mutex_t mutex_;
+    bool isValid_;
 };
 
 #endif // end xd_muteximp_linux_h

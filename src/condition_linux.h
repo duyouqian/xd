@@ -17,9 +17,11 @@ public:
     XDErrorCode timedwait(uint32 millisecond);
     XDErrorCode signal();
     XDErrorCode broadcast();
+    bool isValid() const;
 private:
     XDMutex *mutex_;
     pthread_cond_t cond_;
+    bool isValid_;
 };
 
 #endif // end xd_condition_h

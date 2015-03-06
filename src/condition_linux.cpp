@@ -4,7 +4,8 @@
 XDConditionLinuxImp::XDConditionLinuxImp(XDMutex *mutex)
                    : mutex_(mutex)
 {
-    pthread_cond_init(&cond_, NULL);
+    int32 ret = pthread_cond_init(&cond_, NULL);
+    isValid_ = 0 == ret;
 }
 
 XDConditionLinuxImp::~XDConditionLinuxImp()
@@ -42,4 +43,9 @@ XDErrorCode XDConditionLinuxImp::broadcast()
         return XDError::E_XD_SYSERROR;
     }
     return XDError::E_XD_SUCCESS;
+}
+
+bool XDConditionLinuxImp::isValid() const
+{
+    return isValid_;
 }

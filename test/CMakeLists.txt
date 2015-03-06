@@ -13,9 +13,6 @@ TARGET_LINK_LIBRARIES(ts_mutex xd)
 ADD_EXECUTABLE(ts_cond ts_condition.cpp)
 TARGET_LINK_LIBRARIES(ts_cond xd)
 
-ADD_EXECUTABLE(ts_extends ts_extends.cpp)
-TARGET_LINK_LIBRARIES(ts_extends xd)
-
 ADD_EXECUTABLE(ts_atomics ts_atomics.cpp)
 TARGET_LINK_LIBRARIES(ts_atomics xd)
 

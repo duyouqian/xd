@@ -13,6 +13,8 @@ public:
     virtual XDErrorCode timedwait(uint32 millisecond) = 0;
     // 通知
     virtual XDErrorCode signal() = 0;
+    // 是否有效
+    virtual bool isValid() const = 0;
 };
 
 #endif // end xd_base_sema_h

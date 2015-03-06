@@ -15,6 +15,8 @@ public:
     virtual XDErrorCode signal() = 0;
     // 广播
     virtual XDErrorCode broadcast() = 0;
+    // 是否有效
+    virtual bool isValid() const = 0;
 };
 
 #endif // xd_condition_h

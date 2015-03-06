@@ -3,7 +3,8 @@
 
 XDSemaphoreLinuxImp::XDSemaphoreLinuxImp(int32 ninit /* = 0 */)
 {
-    sem_init(&sem_, 0, ninit);
+    int32 ret = sem_init(&sem_, 0, ninit);
+    isValid_ = 0 == ret;
 }
 
 XDSemaphoreLinuxImp::~XDSemaphoreLinuxImp()
@@ -34,4 +35,9 @@ XDErrorCode XDSemaphoreLinuxImp::signal()
         return XDError::E_XD_SYSERROR;
     }
     return XDError::E_XD_SUCCESS;
+}
+
+bool XDSemaphoreLinuxImp::isValid() const
+{
+    return isValid_;
 }

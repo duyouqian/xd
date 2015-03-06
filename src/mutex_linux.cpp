@@ -9,11 +9,13 @@ XDMutexLinuxImp::XDMutexLinuxImp()
     if (0 != ret) {
         // 设置互斥量属性失败
         ret = pthread_mutex_init(&mutex_, NULL);
+        isValid_ = false;
     } else {
         // 开启互斥量错误检查
         ret = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK_NP);
         ret = pthread_mutex_init(&mutex_, &attr);
         pthread_mutexattr_destroy(&attr);
+        isValid_ = true;
     }
 }
 
@@ -51,4 +53,9 @@ XDErrorCode XDMutexLinuxImp::unlock()
 pthread_mutex_t* XDMutexLinuxImp::getMutex()
 {
     return (&mutex_);
+}
+
+bool XDMutexLinuxImp::isValid() const
+{
+    return isValid_;
 }
