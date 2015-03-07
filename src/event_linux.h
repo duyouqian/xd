@@ -16,7 +16,8 @@ public:
 private:
     bool isManualReset_;
     bool isInit_;
-
+    XDMutex mutex_;
+    XDCondition cond_;
 };
 
 #endif // end xd_eventimp_linux_h
