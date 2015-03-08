@@ -8,6 +8,8 @@
 class XDSyncEventLinuxImp : public XDIEvent
 {
 public:
+    XDSyncEventLinuxImp();
+    ~XDSyncEventLinuxImp();
     bool create(bool isManualReset = false);
     void tigger();
     void reset();
