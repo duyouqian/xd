@@ -8,5 +8,6 @@
 #include "mutex.h"
 #include "condition.h"
 #include "sema.h"
+#include "timer.h"
 
 #endif // end xd_common_h

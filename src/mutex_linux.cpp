@@ -36,7 +36,11 @@ XDErrorCode XDMutexLinuxImp::lock()
 
 XDErrorCode XDMutexLinuxImp::timedlock(uint32 millisecond)
 {
-    // 暂时用lock
+    if (0 == millisecond || (uint32)(-1) == millisecond) {
+        // 无限lock
+        return lock();
+    }
+
     return lock();
 }
 
