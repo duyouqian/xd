@@ -14,9 +14,13 @@ void *thread1(void *argv)
 {
     printf("[THREAD1] exec \n");
     uint32 count = 0;
+    int32 ret;
     while (1) {
         // 生产数据
-        sem1_.wait();
+        ret = sem1_.timedwait(1000);
+        if (XDError::E_XD_TIMEOUT == ret) {
+            printf("[THREAD1] sem wait timedout \n");
+        }
         vec.push_back(count++);
         printf("[THREAD1] add data len:%d \n", vec.size());
         sem2_.signal();
@@ -28,15 +32,20 @@ void *thread1(void *argv)
 void *thread2(void *argv)
 {
     printf("[THREAD2] exec \n");
+    int32 ret;
     while (1) {
         std::vector<uint32> temp;
-        sem2_.wait();
+        ret = sem2_.timedwait(3000);
+        if (XDError::E_XD_TIMEOUT == ret) {
+            printf("[THREAD2] sem wait timedout \n");
+        }
         vec.swap(temp);
         std::vector<uint32>::const_iterator it;
         for (it = temp.begin(); it != temp.end(); ++it) {
             printf("[THREAD2] %d \n", *it);
         }
         sem1_.signal();
+        sleep(4);
     }
     return NULL;
 }

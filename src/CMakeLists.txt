@@ -7,14 +7,14 @@ IF(UNIX)
     SET(BASE_SOURCE ${BASE_SOURCE} 
                     mutex_linux.cpp
                     condition_linux.cpp
-                    atomics_linux.cpp
-                    sema_linux.cpp)
+                    sema_linux.cpp
+                    timer_linux.cpp)
 ELSEIF(APPLE)
     MESSAGE("APPLE")
 ELSEIF(WIN32)
     MESSAGE("WIN32")
 ENDIF()
 
-SET(ALL_SOURCE ${CURRENT_HEADERS})
+SET(ALL_SOURCE ${BASE_SOURCE})
 ADD_LIBRARY(xd ${ALL_SOURCE})
 TARGET_LINK_LIBRARIES(xd pthread)

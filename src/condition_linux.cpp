@@ -1,5 +1,6 @@
 #include "condition_linux.h"
 #include "error.h"
+#include "timer.h"
 
 XDConditionLinuxImp::XDConditionLinuxImp(XDMutex *mutex)
                    : mutex_(mutex)
@@ -24,7 +25,21 @@ XDErrorCode XDConditionLinuxImp::wait()
 
 XDErrorCode XDConditionLinuxImp::timedwait(uint32 millisecond)
 {
-    return wait();
+    if (0 == millisecond || (uint32)(-1) == millisecond) {
+        // 无限wait
+        return wait();
+    }
+    struct timespec ts;
+    XDTimer::getAbsTimespec(&ts, millisecond);
+    int32 ret = pthread_cond_timedwait(&cond_, mutex_->getMutex(), &ts);
+    if (0 != ret) {
+        int32 err = XDGetLastError();
+        if (ETIMEDOUT == err) {
+            return XDError::E_XD_TIMEOUT;
+        }
+        return XDError::E_XD_SYSERROR;
+    }
+    return XDError::E_XD_SUCCESS;
 }
 
 XDErrorCode XDConditionLinuxImp::signal()

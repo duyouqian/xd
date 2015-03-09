@@ -9,6 +9,11 @@ struct tm* XDTimerLinuxImp::getLocalTime(const time_t* timer, struct tm* result)
     return ::localtime_r(timer, result);
 }
 
+uint64 XDTimerLinuxImp::now()
+{
+    return getCurTimestampByS();
+}
+
 uint64 XDTimerLinuxImp::getCurTimestampByS()
 {
     struct ::timeval tv = {0, 0};

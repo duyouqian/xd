@@ -14,6 +14,8 @@ public:
     // 获取本地时间
     static struct tm* getLocalTime(const time_t* timer, struct tm* result);
     // 获取当前时间戳 s(秒)
+    static uint64 now();
+    // 获取当前时间戳 s(秒)
     static uint64 getCurTimestampByS();
     // 获取当前时间戳 ms(毫秒)
     static uint64 getCurTimestampByMS();
