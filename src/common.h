@@ -9,5 +9,6 @@
 #include "condition.h"
 #include "sema.h"
 #include "timer.h"
+#include "thread.h"
 
 #endif // end xd_common_h

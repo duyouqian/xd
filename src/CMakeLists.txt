@@ -8,7 +8,8 @@ IF(UNIX)
                     mutex_linux.cpp
                     condition_linux.cpp
                     sema_linux.cpp
-                    timer_linux.cpp)
+                    timer_linux.cpp
+                    thread_linux.cpp)
 ELSEIF(APPLE)
     MESSAGE("APPLE")
 ELSEIF(WIN32)
