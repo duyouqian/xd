@@ -103,7 +103,7 @@ int XDThreadLinuxImp::createThreadWithName(pthread_t *threadPtr, pthread_attr_t 
 
 uint32 XDThreadLinuxImp::getDefaultStackSize()
 {
-    return 0;//128 * 1024; // 128k
+    return 128 * 1024; // 128k
 }
 
 uint32 XDThreadLinuxImp::adjustStackSize(uint32 stackSize)
