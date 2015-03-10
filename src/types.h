@@ -51,8 +51,18 @@ private:
     void operator& () const;
 } nullptr_t = {};
 
+// pthread 执行对象
+typedef void* (*ThreadEntryPoint)(void*);
+
 #ifndef NULL
     #define NULL nullptr_t
+#endif
+
+#define check(exp)
+#if __unix__
+    #define PTHREAD_NULL -1
+#else
+    #define PTHREAD_NULL NULL
 #endif
 
 // 强制内联

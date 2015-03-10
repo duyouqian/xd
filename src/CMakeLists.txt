@@ -9,7 +9,8 @@ IF(UNIX)
                     condition_linux.cpp
                     sema_linux.cpp
                     timer_linux.cpp
-                    thread_linux.cpp)
+                    thread_linux.cpp
+                    event_linux.cpp)
 ELSEIF(APPLE)
     MESSAGE("APPLE")
 ELSEIF(WIN32)
