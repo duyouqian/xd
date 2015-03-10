@@ -1,5 +1,6 @@
 #include "event_linux.h"
 #include "timer.h"
+#include "error.h"
 
 XDSyncEventLinuxImp::XDSyncEventLinuxImp()
                    : isManualReset_(false)
@@ -65,7 +66,7 @@ void XDSyncEventLinuxImp::wait(uint32 waitTime, bool ignoreThreadIdelState /* = 
                 cond_.wait();
             } else {
                 XDErrorCode ec = cond_.timedwait(waitTime);
-                check(XDError::E_XD_SUCCESS == ec || XDERROR::E_XD_TIMEOUT == ec);
+                check(XDError::E_XD_SUCCESS == ec || XDError::E_XD_TIMEOUT == ec);
                 XDTimer::getTimeOfDay(&now, NULL);
                 XDTimer::subtratTimeval(&now, &tv, &tmp);
                 uint32 costMS = tmp.tv_sec * 1000 + tmp.tv_usec / 1000;

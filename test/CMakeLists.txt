@@ -28,3 +28,6 @@ TARGET_LINK_LIBRARIES(ts_thread xd)
 ADD_EXECUTABLE(ts_group ts_group.cpp)
 TARGET_LINK_LIBRARIES(ts_group xd)
 
+ADD_EXECUTABLE(ts_file ts_file.cpp)
+TARGET_LINK_LIBRARIES(ts_file xd)
+

@@ -11,5 +11,6 @@
 #include "timer.h"
 #include "thread.h"
 #include "thread_group.h"
+#include "file.h"
 
 #endif // end xd_common_h

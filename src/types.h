@@ -36,6 +36,9 @@ typedef signed long long    int64;
 #define MIN_double          (2.2250738585072014e-308)
 #define MAX_double          (1.7976931348623158e+308)
 
+#define MIN(a, b)           (a) < (b) ? (a) : (b)
+#define MAX(a, b)           (a) > (b) ? (a) : (b)
+
 // errorcode
 typedef int32 XDErrorCode;
 
@@ -57,7 +60,8 @@ typedef void* (*ThreadEntryPoint)(void*);
     #define NULL nullptr_t
 #endif
 
-#define check(exp)
+#include <assert.h>
+#define check(exp) assert(exp)
 
 // 强制内联
 #ifdef _MSC_VER_ // for MSVC
