@@ -14,7 +14,7 @@ int fileFd = -1;
 
 void* witeLog(void *argv)
 {
-    char *test = "test111111111111111122\n";
+    const char *test = "test111111111111111122\n";
     while (1) {
         write(pipeWrite, test, strlen(test));
         ssize_t len = splice(pipeRead, NULL, fileFd, NULL, 32768, SPLICE_F_MORE | SPLICE_F_MOVE);

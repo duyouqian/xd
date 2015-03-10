@@ -7,13 +7,15 @@ XDThreadGroup threadGroup("TS_group");
 
 int32 count = 0;
 
+volatile bool isStop = false;
+
 class Thread1Run : public XDIRunnable
 {
 public:
     uint32 run()
     {
-        while (1) {
-            XDLOG_minfo("%d", count);
+        while (!isStop) {
+            XDLOG_minfo("%ld, %d", XDThread::getCurrentThreadID(), count);
             ++count;
             XDTimer::safeSleepByS(1);
         }
@@ -28,9 +30,7 @@ int main(int argc, char **argv)
     for (i = 0; i < len; ++i) {
         XDIThread *thread = XDThread::create(&tr1, "Thread1Run", &threadGroup);
     }
-    while (1) {
-        XDTimer::safeSleepByS(1);
-    }
+    isStop = true;
     XDLOG_close();
     return 0;
 }

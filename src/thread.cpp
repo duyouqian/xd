@@ -5,7 +5,7 @@ XDIThread* XDThread::create(XDIRunnable *runner, const char *tName, bool isAutoD
     return create(runner, tName, threadGroup, stackSize, pri, threadAffinityMask);
 }
 
-XDIThread* XDThread::create(XDIRunnable* runner, const char *tName, XDThreadGroup *threadGroup, uint32 stackSize /* = 0 */, XDEThreadPriority pri /* = XDTHREADPRI_NORAML */, uint64 threadAffinityMask /* = 0xFFFFFFFFFFFFFFFF */)
+XDIThread* XDThread::create(XDIRunnable* runner, const char *tName, XDThreadGroup *threadGroup /* = NULL */, uint32 stackSize /* = 0 */, XDEThreadPriority pri /* = XDTHREADPRI_NORAML */, uint64 threadAffinityMask /* = 0xFFFFFFFFFFFFFFFF */)
 {
     XDThread *thread = new XDThread();
     if (!thread->createInternal(runner, tName, threadGroup, stackSize, pri, threadAffinityMask)) {

@@ -20,12 +20,14 @@ XDLog::XDLog()
      , lastTouch_(0)
      , thread_(NULL)
      , event_(NULL)
+     , isRun_(false)
 {
     bzero(path_, sizeof(path_));
 }
 
 XDLog::~XDLog()
 {
+    close();
 }
 
 bool XDLog::open(const char *path, uint8 outputLv)
@@ -40,14 +42,41 @@ bool XDLog::open(const char *path, uint8 outputLv)
     }
     strncpy(path_, path, MAX_PATH_LEN);
     outputLv_ = outputLv;
-    isInit_ = createFile();
-    return isInit_;
+    if (!createFile()) {
+        return false;
+    }
+    // 创建同步事件
+    event_ = new XDSyncEvent();
+    if (NULL == event_) {
+        fprintf(stderr, "创建同步事件失败\n");
+        return false;
+    }
+    // 创建线程
+    thread_ = XDThread::create(this, "LogThread");
+    if (NULL == thread_) {
+        fprintf(stderr, "创建线程失败\n");
+        return false;
+    }
+    isInit_ = true;
+    return true;
 }
 
 bool XDLog::close()
 {
     isInit_ = false;
-    return file_.close();
+    isRun_ = false;
+    if (event_) {
+        event_->trigger();
+        delete event_;
+        event_ = NULL;
+    }
+    if (thread_) {
+        thread_->kill(true);
+        delete thread_;
+        thread_ = NULL;
+    }
+    file_.close();
+    return true;
 }
 
 bool XDLog::write(uint8 lv, const char *file, int line, const char *func, const char *format, ...)
@@ -140,6 +169,19 @@ bool XDLog::exec(XDLogMsgItem *item)
     file_.write((const uint8*)buffer, strlen(buffer));
 }
 
+bool XDLog::init()
+{
+    isRun_ = true;
+    return true;
+}
+
 uint32 XDLog::run()
 {
+    while(isRun_) {
+        while (1) {
+            event_->wait();
+        }
+        XDLogMsgItem *item;
+        exec(item);
+    }
 }

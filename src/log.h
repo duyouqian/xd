@@ -36,6 +36,7 @@ struct XDLogMsgItem
     char context[MAX_LOG_CONTEXT];
 };
 
+// 日志单独线程跑
 class XDLog : public XDIRunnable
 {
 public:
@@ -45,6 +46,7 @@ public:
     bool close();
     bool write(uint8 lv, const char *file, int line, const char *func, const char *format, ...);
     bool exec(XDLogMsgItem *item);
+    bool init();
     uint32 run();
 private:
     bool createFile();
@@ -54,8 +56,9 @@ private:
     uint8 outputLv_;
     volatile bool isInit_;
     uint64 lastTouch_;
-    XDThread *thread_;
+    XDIThread *thread_;
     XDSyncEvent *event_;
+    volatile bool isRun_;
 };
 
 extern XDLog gLog;
