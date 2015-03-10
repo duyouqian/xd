@@ -1,6 +1,5 @@
 #include "event_linux.h"
 #include "timer.h"
-#include <stdio.h>
 
 XDSyncEventLinuxImp::XDSyncEventLinuxImp()
                    : isManualReset_(false)
@@ -81,6 +80,5 @@ void XDSyncEventLinuxImp::wait(uint32 waitTime, bool ignoreThreadIdelState /* = 
     } while (!ret && (0 != waitTime));
     if (0 == waitTime) {
         // timeout
-        printf("[SYNCEVENT] wait timeout\n");
     }
 }

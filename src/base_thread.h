@@ -30,8 +30,6 @@ public:
     virtual void exit() { }
 };
 
-class XDThreadRegistry;
-
 // 线程接口
 class XDIThread : public XDNoncopyable
 {
@@ -75,7 +73,10 @@ public:
         isUpdated_ = true;
     }
     // 移除
-    void remove(uint32 id);
+    void remove(uint32 id)
+    {
+        registry_.erase(id);
+    }
     // 获取数量
     uint32 getCount()
     {
