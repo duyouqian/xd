@@ -29,6 +29,8 @@ public:
     static void safeSleepByMS(uint32 millisecond);
     // 获取绝对时间
     static XDErrorCode getAbsTimespec(struct ::timespec *ts, uint32 millisecond);
+    // 时间差
+    static void subtratTimeval(const struct timeval *from, struct timeval *sub, struct timeval *rs);
     // 格式化时间
     static std::string getFormatTime(const char *fmt = NULL);
     static std::string getFormatTime(const struct ::timeval *tv,const char *fmt = NULL);

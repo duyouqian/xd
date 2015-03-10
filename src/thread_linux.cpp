@@ -103,7 +103,7 @@ int XDThreadLinuxImp::createThreadWithName(pthread_t *threadPtr, pthread_attr_t 
 
 uint32 XDThreadLinuxImp::getDefaultStackSize()
 {
-    return 128 * 1024; // 128k
+    return 0;//128 * 1024; // 128k
 }
 
 uint32 XDThreadLinuxImp::adjustStackSize(uint32 stackSize)
@@ -162,10 +162,28 @@ ThreadEntryPoint XDThreadLinuxImp::getThreadEntryPoint()
 
 void XDThreadLinuxImp::preRun()
 {
+    // 设置线程名
+    int32 ret = pthread_setname_np(pthread_, threadName_.c_str());
+    if (0 != ret) {
+        // error
+    }
 }
 
 uint32 XDThreadLinuxImp::run()
 {
+    threadIsRunning_ = true;
+    check(runnable_);
+    uint32 exitCode = 1;
+    if (runnable_->init()) {
+        syncEvent_->trigger();
+        exitCode = runnable_->run();
+        runnable_->exit();
+    } else {
+        // init failure
+        syncEvent_->trigger();
+    }
+    threadIsRunning_ = false;
+    return exitCode;
 }
 
 void XDThreadLinuxImp::postRun()
@@ -175,8 +193,9 @@ void XDThreadLinuxImp::postRun()
 bool XDThreadLinuxImp::createInternal(XDIRunnable *runner, const char *tName, uint32 stackSize, XDEThreadPriority pri, uint64 threadAffinityMask)
 {
     runnable_ = runner;
+    bool eventCreate = false;
     syncEvent_ = new XDSyncEvent();
-    syncEvent_->create(true);
+    eventCreate = syncEvent_->create(true);
     const char *tt = "111";
     std::string tmpName(tName ? tName : "XD Server V1.0.0");
     threadName_.assign(tmpName);

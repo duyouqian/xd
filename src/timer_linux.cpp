@@ -111,3 +111,20 @@ std::string XDTimerLinuxImp::getFormatTime(const struct ::timeval *tv, const cha
     }
     return std::string(buffer);
 }
+
+// 时间差
+void XDTimerLinuxImp::subtratTimeval(const struct timeval *from, struct timeval *sub, struct timeval *rs)
+{
+    if (from->tv_usec < sub->tv_usec) {
+        int32 n = ((sub->tv_usec - from->tv_usec) / 1000000) + 1;
+        sub->tv_usec -= 1000000 * n;
+        sub->tv_sec += n;
+    }
+    if ((from->tv_usec - sub->tv_usec) > 1000000) {
+        int32 m = (from->tv_usec - sub->tv_usec) / 1000000;
+        sub->tv_usec += m * 1000000;
+        sub->tv_sec -= m;
+    }
+    rs->tv_sec = from->tv_sec - sub->tv_sec;
+    rs->tv_usec = from->tv_usec - sub->tv_usec;
+}

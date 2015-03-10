@@ -23,7 +23,7 @@ public:
     // 初始化
     virtual bool init() { return true; }
     // 真实执行体
-    virtual int32 run() = 0;
+    virtual uint32 run() = 0;
     // 停止
     virtual void stop() { }
     // 退出
@@ -37,8 +37,8 @@ class XDIThread : public XDNoncopyable
 {
 public:
     // 创建线程
-    static XDIThread* create(XDIRunnable *runner, const char *tName, bool isAutoDeleteSelf, bool isAutoDeleteRunnable = false, uint32 stackSize = 0, XDEThreadPriority = XDTHREADPRI_NORMAL, uint64 threadAffinityMask = 0);
-    static XDIThread* create(XDIRunnable *runner, const char *tName, uint32 stackSize = 0, XDEThreadPriority = XDTHREADPRI_NORMAL, uint64 threadAffinityMask = 0xFFFFFFFFFFFFFFFF);
+    //static XDIThread* create(XDIRunnable *runner, const char *tName, bool isAutoDeleteSelf, bool isAutoDeleteRunnable = false, uint32 stackSize = 0, XDEThreadPriority pri = XDTHREADPRI_NORMAL, uint64 threadAffinityMask = 0);
+    //static XDIThread* create(XDIRunnable *runner, const char *tName, uint32 stackSize = 0, XDEThreadPriority pri = XDTHREADPRI_NORMAL, uint64 threadAffinityMask = 0xFFFFFFFFFFFFFFFF);
     // 设置优先级
     virtual bool setThreadPriority(XDEThreadPriority newPri) = 0;
     // 设置线程暂停和恢复 true:暂停 false:恢复
@@ -52,7 +52,7 @@ public:
     // 获取线程名
     virtual std::string getThreadName() = 0;
 protected:
-    virtual bool createInternal(XDIRunnable *runner, const char *tName, uint32 stackSize = 0, XDEThreadPriority = XDTHREADPRI_NORMAL, uint64 threadAffinityMask = 0) = 0;
+    virtual bool createInternal(XDIRunnable *runner, const char *tName, uint32 stackSize = 0, XDEThreadPriority pri = XDTHREADPRI_NORMAL, uint64 threadAffinityMask = 0) = 0;
 };
 
 

@@ -1,7 +1,8 @@
 FILE(GLOB_RECURSE CURRENT_HEADERS *.h *.cpp)
 
 SET(BASE_SOURCE mutex.cpp
-                referenceCount.cpp)
+                referenceCount.cpp
+                thread.cpp)
 IF(UNIX)
     MESSAGE("UNIX")
     SET(BASE_SOURCE ${BASE_SOURCE} 

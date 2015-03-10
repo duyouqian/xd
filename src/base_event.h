@@ -8,16 +8,16 @@ class XDIEvent : public XDNoncopyable
 {
 public:
     virtual bool create(bool isManualReset = false) = 0;
-    virtual void tigger() = 0;
+    virtual void trigger() = 0;
     virtual void reset() = 0;
     virtual void wait() = 0;
     virtual void wait(uint32 waitTime, bool ignoreThreadIdelState = false) = 0;
 protected:
     typedef enum {
-        TIGGERED_NONE,
-        TIGGERED_ONE,
-        TIGGERED_ALL
-    } TiggerType;
+        TRIGGERED_NONE,
+        TRIGGERED_ONE,
+        TRIGGERED_ALL
+    } TriggerType;
 };
 
 #endif // end xd_base_event_h

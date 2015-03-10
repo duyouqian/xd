@@ -4,7 +4,7 @@
 class Thread1Run : public XDIRunnable
 {
 public:
-    int32 run()
+    uint32 run()
     {
         printf("[Thread1Run] run \n");
     }
@@ -13,6 +13,7 @@ public:
 int main(int argc, char **argv)
 {
     Thread1Run tr1;
-    tr1.run();
+    XDIThread *thread = XDThread::create(&tr1, "Thread1Run", (uint32)0);
+    thread->waitForComplateion();
     return 0;
 }
