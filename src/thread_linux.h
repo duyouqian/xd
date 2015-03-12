@@ -5,14 +5,17 @@
 #include <string>
 
 #include "base_thread.h"
+#include "thread_group.h"
 #include "event.h"
 
 class XDThreadLinuxImp : public XDIThread
 {
 public:
+    // 获取线程ＩＤ
+    static uint32 getCurrentThreadID();
     // 创建线程
-    static XDIThread* create(XDIRunnable *runner, const char *tName, bool isAutoDeleteSelf, bool isAutoDeleteRunnable = false, uint32 stackSize = 0, XDEThreadPriority pri = XDTHREADPRI_NORMAL, uint64 threadAffinityMask = 0);
-    static XDIThread* create(XDIRunnable *runner, const char *tName, uint32 stackSize = 0, XDEThreadPriority pri = XDTHREADPRI_NORMAL, uint64 threadAffinityMask = 0xFFFFFFFFFFFFFFFF);
+    static XDIThread* create(XDIRunnable *runner, const char *tName, bool isAutoDeleteSelf, bool isAutoDeleteRunnable = false, XDThreadGroup *threadGroup = NULL, uint32 stackSize = 0, XDEThreadPriority pri = XDTHREADPRI_NORMAL, uint64 threadAffinityMask = 0);
+    static XDIThread* create(XDIRunnable *runner, const char *tName, XDThreadGroup *threadGroup = NULL, uint32 stackSize = 0, XDEThreadPriority pri = XDTHREADPRI_NORMAL, uint64 threadAffinityMask = 0xFFFFFFFFFFFFFFFF);
     XDThreadLinuxImp();
     ~XDThreadLinuxImp();
 
@@ -47,7 +50,7 @@ protected:
     // 
     virtual void postRun();
     // 创建线程内部用
-    virtual bool createInternal(XDIRunnable *runner, const char*tName, uint32 stackSize = 0, XDEThreadPriority pri = XDTHREADPRI_NORMAL, uint64 threadAffinityMask = 0);
+    virtual bool createInternal(XDIRunnable *runner, const char*tName, XDThreadGroup *threadGroup = NULL, uint32 stackSize = 0, XDEThreadPriority pri = XDTHREADPRI_NORMAL, uint64 threadAffinityMask = 0);
 
 protected:
     // 线程对象
@@ -66,6 +69,8 @@ protected:
     std::string threadName_;
     // 是否在运行
     volatile bool threadIsRunning_;
+    // 线程组
+    XDThreadGroup *threadGroup_;
 };
 
 #endif // end xd_threadimp_linux_h

@@ -9,8 +9,7 @@ typedef unsigned long long  uint64;
 
 // signed
 typedef signed char         int8;
-typedef signed short int    int16;
-typedef signed int          int32;
+typedef signed short int    int16; typedef signed int          int32;
 typedef signed long long    int64;
 
 // max min num
@@ -59,11 +58,6 @@ typedef void* (*ThreadEntryPoint)(void*);
 #endif
 
 #define check(exp)
-#if __unix__
-    #define PTHREAD_NULL -1
-#else
-    #define PTHREAD_NULL NULL
-#endif
 
 // 强制内联
 #ifdef _MSC_VER_ // for MSVC
@@ -82,14 +76,17 @@ typedef void* (*ThreadEntryPoint)(void*);
         #define PLATFORM_64BITS                 0 
     #endif
     #define STDCALL
+    #define PTHREAD_NULL                        -1
 #elif __APPLE__
     // mac os
     #define PLATFORM_64BITS                     0
     #define STDCALL
+    #define PTHREAD_NULL -1
 #else
     // win
     #define PLATFORM_64BITS                     0
     #define STDCALL                             __stdcall
+    #define PTHREAD_NULL                        NULL
 #endif
 
 

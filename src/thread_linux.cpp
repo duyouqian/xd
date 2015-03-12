@@ -2,6 +2,7 @@
 #include "timer.h"
 
 #include <string.h>
+#include <sys/syscall.h>
 
 XDThreadLinuxImp::XDThreadLinuxImp()
                 : pthread_(PTHREAD_NULL)
@@ -11,6 +12,7 @@ XDThreadLinuxImp::XDThreadLinuxImp()
                 , threadAffinityMask_(0)
                 , threadID_(0)
                 , threadIsRunning_(false)
+                , threadGroup_(NULL)
 {
 }
 
@@ -20,6 +22,9 @@ XDThreadLinuxImp::~XDThreadLinuxImp()
         kill(true);
     }
     // remove to poll
+    if (threadGroup_) {
+        threadGroup_->removeThread(threadID_);
+    }
     threadID_ = 0;
 }
 
@@ -128,6 +133,7 @@ bool XDThreadLinuxImp::spinThread(pthread_t *threadPtr, ThreadEntryPoint proc, u
             }
             if (NULL == attr) {
                 // 设置栈大小失败
+                attr = &stackAttr;
             }
         }
     }
@@ -146,6 +152,10 @@ void* XDThreadLinuxImp::_ThreadProc(void *argv)
 {
     check(argv);
     XDThreadLinuxImp *thread = (XDThreadLinuxImp*)argv;
+    thread->threadID_ = getCurrentThreadID();
+    if (thread->threadGroup_) {
+        thread->threadGroup_->addThread(thread->threadID_, thread);
+    }
     
     thread->preRun();
     thread->run();
@@ -188,11 +198,13 @@ uint32 XDThreadLinuxImp::run()
 
 void XDThreadLinuxImp::postRun()
 {
+    //delete this;
 }
 
-bool XDThreadLinuxImp::createInternal(XDIRunnable *runner, const char *tName, uint32 stackSize, XDEThreadPriority pri, uint64 threadAffinityMask)
+bool XDThreadLinuxImp::createInternal(XDIRunnable *runner, const char *tName, XDThreadGroup *threadGroup, uint32 stackSize, XDEThreadPriority pri, uint64 threadAffinityMask)
 {
     runnable_ = runner;
+    threadGroup_ = threadGroup;
     bool eventCreate = false;
     syncEvent_ = new XDSyncEvent();
     eventCreate = syncEvent_->create(true);
@@ -211,4 +223,10 @@ bool XDThreadLinuxImp::createInternal(XDIRunnable *runner, const char *tName, ui
     delete syncEvent_;
     syncEvent_ = NULL;
     return PTHREAD_NULL != pthread_;
+}
+
+uint32 XDThreadLinuxImp::getCurrentThreadID()
+{
+    pid_t id = static_cast<pid_t>(syscall(SYS_gettid));
+    return static_cast<uint32>(id);
 }

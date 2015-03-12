@@ -10,5 +10,6 @@
 #include "sema.h"
 #include "timer.h"
 #include "thread.h"
+#include "thread_group.h"
 
 #endif // end xd_common_h
