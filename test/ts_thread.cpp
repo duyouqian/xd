@@ -13,7 +13,8 @@ public:
 int main(int argc, char **argv)
 {
     Thread1Run tr1;
-    XDIThread *thread = XDThread::create(&tr1, "Thread1Run", (uint32)0);
+    XDIThread *thread = XDThread::create(&tr1, "Thread1Run");
     thread->waitForComplateion();
+    delete thread;
     return 0;
 }

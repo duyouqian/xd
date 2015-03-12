@@ -25,3 +25,6 @@ TARGET_LINK_LIBRARIES(ts_timer xd)
 ADD_EXECUTABLE(ts_thread ts_thread.cpp)
 TARGET_LINK_LIBRARIES(ts_thread xd)
 
+ADD_EXECUTABLE(ts_group ts_group.cpp)
+TARGET_LINK_LIBRARIES(ts_group xd)
+
