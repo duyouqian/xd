@@ -31,3 +31,6 @@ TARGET_LINK_LIBRARIES(ts_group xd)
 ADD_EXECUTABLE(ts_file ts_file.cpp)
 TARGET_LINK_LIBRARIES(ts_file xd)
 
+ADD_EXECUTABLE(ts_log_new ts_log_new.cpp)
+TARGET_LINK_LIBRARIES(ts_log_new xd)
+

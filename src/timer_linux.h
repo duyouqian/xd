@@ -23,6 +23,8 @@ public:
     static uint64 getCurTimestampByUS();
     // 获取时间
     static int32 getTimeOfDay(struct ::timeval *tv, struct timezone *tz);
+    // 判断是否是同一天(秒)
+    static bool isSameDayByTimestampWithS(uint64 fromSecond, uint64 toSecond);
     // 安全休眠 s(秒)
     static void safeSleepByS(uint32 second);
     // 安全休眠 ms(毫秒)
@@ -33,6 +35,7 @@ public:
     static void subtratTimeval(const struct timeval *from, struct timeval *sub, struct timeval *rs);
     // 格式化时间
     static std::string getFormatTime(const char *fmt = NULL);
+    static std::string getFormatTime(uint64 timestamp, const char *fmt = NULL);
     static std::string getFormatTime(const struct ::timeval *tv,const char *fmt = NULL);
 };
 

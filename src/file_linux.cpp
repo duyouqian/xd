@@ -91,8 +91,8 @@ void XDFileHandleLinuxImp::close()
 {
     if (isValid()) {
         ::close(fileHandle_);
-        fileHandle_ = -1;
     }
+    fileHandle_ = -1;
 }
 
 XDFileLinuxImp::XDFileLinuxImp()

@@ -12,5 +12,6 @@
 #include "thread.h"
 #include "thread_group.h"
 #include "file.h"
+#include "log.h"
 
 #endif // end xd_common_h

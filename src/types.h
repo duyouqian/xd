@@ -42,6 +42,9 @@ typedef signed long long    int64;
 // errorcode
 typedef int32 XDErrorCode;
 
+#define MAX_PATH_LEN 512
+#define MAX_FILENAME_LEN 128
+#define MAX_FULLPATH_LEN 1024
 
 // 定义 NULL
 const class nullptr_t_t

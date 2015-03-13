@@ -40,6 +40,36 @@ int32 XDTimerLinuxImp::getTimeOfDay(struct ::timeval *tv, struct timezone *tz)
     return ::gettimeofday(tv, tz);
 }
 
+bool XDTimerLinuxImp::isSameDayByTimestampWithS(uint64 fromSecond, uint64 toSecond)
+{
+    struct tm tm1, tm2;
+    struct tm *pTm1 = NULL, *pTm2 = NULL;
+    time_t t1 = (time_t)fromSecond;
+    time_t t2 = (time_t)toSecond;
+    pTm1 = getLocalTime(&t1, &tm1);
+    if (NULL == pTm1) {
+        return false;
+    }
+    pTm2 = getLocalTime(&t2, &tm2);
+    if (NULL == pTm2) {
+        return false;
+    }
+    tm1 = *pTm1;
+    tm2 = *pTm2;
+    int32 year1 = tm1.tm_year;
+    int32 mon1 = tm1.tm_mon;
+    int32 day1 = tm1.tm_mday;
+
+    int32 year2 = tm2.tm_year;
+    int32 mon2 = tm2.tm_mon;
+    int32 day2 = tm2.tm_mday;
+
+    if (year1 == year2 && mon1 == mon2 && day1 == day2) {
+        return true;
+    }
+    return false;
+}
+
 void XDTimerLinuxImp::safeSleepByS(uint32 second)
 {
     safeSleepByMS(second * 1000);
@@ -78,10 +108,17 @@ XDErrorCode XDTimerLinuxImp::getAbsTimespec(struct timespec *ts, uint32 millisec
     return XDError::E_XD_SUCCESS;
 }
 
+
 std::string XDTimerLinuxImp::getFormatTime(const char *fmt)
 {
     struct ::timeval tv = {0, 0};
     getTimeOfDay(&tv, NULL);
+    return getFormatTime(&tv, fmt);
+}
+
+std::string XDTimerLinuxImp::getFormatTime(uint64 timestamp, const char *fmt)
+{
+    struct ::timeval tv = {(time_t)timestamp, 0};
     return getFormatTime(&tv, fmt);
 }
 
