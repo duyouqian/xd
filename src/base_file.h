@@ -24,10 +24,16 @@ public:
 class XDIFile : public XDNoncopyable
 {
 public:
-    // 打开文件
-    virtual bool open(const char *name, const char *type) = 0;
+    // 只读打开文件
+    virtual bool readOpen(const char *name) = 0;
+    // 只写/写打开文件
+    virtual bool writeOpen(const char *name, bool isAppend, bool isAllowRead) = 0;
     // 关闭文件
     virtual bool close() = 0;
+    // 读取文件
+    virtual bool read(uint8 *buffer, uint32 len) = 0;
+    // 写文件
+    virtual bool write(const uint8 *msg, uint32 len) = 0;
 };
 
 #endif // end xd_base_file_h

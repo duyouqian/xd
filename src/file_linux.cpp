@@ -9,13 +9,12 @@ const uint32 XDFileHandleLinuxImp::READWRITE_SIZE = 1024 * 1024;
 XDFileHandleLinuxImp::XDFileHandleLinuxImp(int32 fileHandle)
                     : fileHandle_(fileHandle)
 {
-    check(fileHandle_ > -1);
+    check(isValid());
 }
 
 XDFileHandleLinuxImp::~XDFileHandleLinuxImp()
 {
-    close(fileHandle_);
-    fileHandle_ = false;
+    close();
 }
 
 int64 XDFileHandleLinuxImp::tell()
@@ -79,4 +78,91 @@ uint64 XDFileHandleLinuxImp::size()
     struct stat fileInfo;
     fstat(fileHandle_, &fileInfo);
     return fileInfo.st_size;
+}
+
+void XDFileHandleLinuxImp::changeFileHandle(int32 newFileHandle)
+{
+    close();
+    fileHandle_ = newFileHandle;
+    check(isValid());
+}
+
+void XDFileHandleLinuxImp::close()
+{
+    if (isValid()) {
+        ::close(fileHandle_);
+        fileHandle_ = -1;
+    }
+}
+
+XDFileLinuxImp::XDFileLinuxImp()
+              : handle_(NULL)
+{
+}
+
+XDFileLinuxImp::~XDFileLinuxImp()
+{
+    if (handle_) {
+        delete handle_;
+    }
+    handle_ = NULL;
+}
+
+bool XDFileLinuxImp::readOpen(const char *name)
+{
+    //
+    int32 fileHandle = open(name, O_RDONLY);
+    if (-1 == fileHandle) {
+        return false;
+    }
+    if (handle_) {
+        handle_->changeFileHandle(fileHandle);
+    } else {
+        handle_ = new XDFileHandleLinuxImp(fileHandle);
+    }
+    return true;
+}
+
+bool XDFileLinuxImp::writeOpen(const char *name, bool isAppend, bool isAllowRead)
+{
+    int32 flags = O_CREAT | O_CLOEXEC;
+    if (isAppend) {
+        flags |= O_APPEND;
+    }
+    if (isAllowRead) {
+        flags |= O_RDWR;
+    } else {
+        flags |= O_WRONLY;
+    }
+    int32 fileHandle = ::open(name, flags, S_IRUSR | S_IWUSR);
+    if (-1 == fileHandle) {
+        return false;
+    }
+    if (handle_) {
+        handle_->changeFileHandle(fileHandle);
+    } else {
+        handle_ = new XDFileHandleLinuxImp(fileHandle);
+    }
+    return true;
+}
+
+bool XDFileLinuxImp::close()
+{
+    if (handle_) {
+        handle_->close();
+        return true;
+    }
+    return false;
+}
+
+bool XDFileLinuxImp::read(uint8 *buffer, uint32 len)
+{
+    check(isValid());
+    return handle_->read(buffer, len);
+}
+
+bool XDFileLinuxImp::write(const uint8 *msg, uint32 len)
+{
+    check(isValid());
+    return handle_->write(msg, len);
 }

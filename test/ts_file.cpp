@@ -5,11 +5,13 @@
 
 int main(int argc, char **argv)
 {
-    int32 fileHandler = open("ts_file.log", O_RDWR | O_CREAT, 0777);
-    check(fileHandler != -1);
-    XDFileHandle fileHandle(fileHandler);
-    fileHandle.seekFromEnd();
+    XDFile file;
+    file.writeOpen("ts_file.log", true, true);
+    char readMsg[2560];
+    bzero(readMsg, sizeof(readMsg));
+    file.read((uint8*)readMsg, sizeof(readMsg));
+    printf("[FuleHandle] meaasge:%s\n", readMsg);
     const char *msg = "hello ts_file\n";
-    fileHandle.write((const uint8*)msg, strlen(msg));
+    file.write((const uint8*)msg, strlen(msg));
     return 0;
 }

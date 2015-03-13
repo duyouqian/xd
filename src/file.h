@@ -5,7 +5,7 @@
     // unix or linux
     #include "file_linux.h"
     typedef XDFileHandleLinuxImp XDFileHandle;
-    //typedef XDFileLinuxImp XDFile;
+    typedef XDFileLinuxImp XDFile;
 #elif __APPLE__
     // mac os
 #else
