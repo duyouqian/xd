@@ -60,6 +60,7 @@ protected:
 
 class XDThreadRegistry : public XDNoncopyable
 {
+friend class XDThreadGroup;
 public:
     // 添加
     void add(uint32 id, XDIThread *thread)

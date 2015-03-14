@@ -34,8 +34,7 @@ XDErrorCode XDSemaphoreLinuxImp::timedwait(uint32 millisecond)
     int32 ret;
     while ((ret = sem_timedwait(&sem_, &ts)) == -1 && EINTR == XDGetLastError());
     if (0 != ret) {
-        int32 err = XDGetLastError();
-        if (ETIMEDOUT == err) {
+        if (ETIMEDOUT == ret) {
             return XDError::E_XD_TIMEOUT;
         }
         return XDError::E_XD_SYSERROR;

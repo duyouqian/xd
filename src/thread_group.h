@@ -15,6 +15,7 @@ public:
     void removeThread(uint32 id);
     XDIThread* getThreadByID(uint32 id);
     uint32 getCount();
+    void waitForComplateionAll();
 private:
     std::string name_;
     XDThreadRegistry allThreads_;

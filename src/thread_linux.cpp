@@ -21,10 +21,11 @@ XDThreadLinuxImp::~XDThreadLinuxImp()
     if (PTHREAD_NULL != pthread_) {
         kill(true);
     }
-    // remove to poll
-    if (threadGroup_) {
-        threadGroup_->removeThread(threadID_);
-    }
+    // remove to poll 有线程组进行移除
+    //if (threadGroup_) {
+        //threadGroup_->removeThread(threadID_);
+    //}
+    threadGroup_ = NULL;
     threadID_ = 0;
 }
 
@@ -45,7 +46,7 @@ bool XDThreadLinuxImp::suspend(bool pause)
 bool XDThreadLinuxImp::kill(bool wait)
 {
     if (runnable_) {
-        runnable_->stop();
+        //runnable_->stop();
     }
     if (wait) {
         while (threadIsRunning_) {
@@ -161,6 +162,7 @@ void* XDThreadLinuxImp::_ThreadProc(void *argv)
     thread->run();
     thread->postRun();
     pthread_exit(NULL);
+    //thread->pthread_ = PTHREAD_NULL;
     return NULL;
 
 }

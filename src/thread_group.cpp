@@ -8,6 +8,11 @@ XDThreadGroup::XDThreadGroup(const char *name)
 
 XDThreadGroup::~XDThreadGroup()
 {
+    std::map<uint32, XDIThread*>::iterator it;
+    for (it = allThreads_.registry_.begin(); it != allThreads_.registry_.end(); ++it) {
+        delete it->second;
+    }
+    allThreads_.registry_.clear();
 }
 
 void XDThreadGroup::addThread(uint32 id, XDIThread *thread)
@@ -28,4 +33,12 @@ XDIThread* XDThreadGroup::getThreadByID(uint32 id)
 uint32 XDThreadGroup::getCount()
 {
     return allThreads_.getCount();
+}
+
+void XDThreadGroup::waitForComplateionAll()
+{
+    std::map<uint32, XDIThread*>::iterator it;
+    for (it = allThreads_.registry_.begin(); it != allThreads_.registry_.end(); ++it) {
+        (it->second)->waitForComplateion();
+    }
 }

@@ -6,6 +6,7 @@
 #include "types.h"
 #include "thread.h"
 #include "event.h"
+#include "blocking_queue.h"
 
 #define XDLOG_LEVEL_FATAL 5
 #define XDLOG_LEVEL_ERROR 4
@@ -48,6 +49,8 @@ public:
     bool exec(XDLogMsgItem *item);
     bool init();
     uint32 run();
+    void exit();
+    void stop();
 private:
     bool createFile();
 private:
@@ -59,6 +62,7 @@ private:
     XDIThread *thread_;
     XDSyncEvent *event_;
     volatile bool isRun_;
+    XDBlockingQueue<struct XDLogMsgItem*> mq_;
 };
 
 extern XDLog gLog;

@@ -45,8 +45,7 @@ XDErrorCode XDMutexLinuxImp::timedlock(uint32 millisecond)
     XDTimer::getAbsTimespec(&ts, millisecond);
     int32 ret = pthread_mutex_timedlock(&mutex_, &ts);
     if (0 != ret) {
-        int32 err = XDGetLastError();
-        if (ETIMEDOUT == err) {
+        if (ETIMEDOUT == ret) {
             return XDError::E_XD_TIMEOUT;
         }
         return XDError::E_XD_SYSERROR;

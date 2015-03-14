@@ -2,6 +2,7 @@
 #include "timer.h"
 #include "thread.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include <string>
@@ -21,6 +22,7 @@ XDLog::XDLog()
      , thread_(NULL)
      , event_(NULL)
      , isRun_(false)
+     , mq_()
 {
     bzero(path_, sizeof(path_));
 }
@@ -48,6 +50,10 @@ bool XDLog::open(const char *path, uint8 outputLv)
     // 创建同步事件
     event_ = new XDSyncEvent();
     if (NULL == event_) {
+        fprintf(stderr, "创建同步事件失败\n");
+        return false;
+    }
+    if (!event_->create()) {
         fprintf(stderr, "创建同步事件失败\n");
         return false;
     }
@@ -88,19 +94,21 @@ bool XDLog::write(uint8 lv, const char *file, int line, const char *func, const 
     if (lv < outputLv_) {
         return false;
     }
-    struct XDLogMsgItem item;
-    bzero(item.locate, sizeof(item.locate));
-    bzero(item.context, sizeof(item.context));
-    item.timestamp = XDTimer::now();
-    item.lv = lv;
-    item.threadID = XDThread::getCurrentThreadID();
-    snprintf(item.locate, MAX_LOG_LOCATE, "%s:%d:%s", file, line, func);
+    struct XDLogMsgItem *item = (struct XDLogMsgItem *) malloc(sizeof(XDLogMsgItem));
+    check(item);
+    bzero(item->locate, sizeof(item->locate));
+    bzero(item->context, sizeof(item->context));
+    item->timestamp = XDTimer::now();
+    item->lv = lv;
+    item->threadID = XDThread::getCurrentThreadID();
+    snprintf(item->locate, MAX_LOG_LOCATE, "%s:%d:%s", file, line, func);
     // 构建内容
     va_list va;
     va_start(va, format);
-    vsnprintf(item.context, MAX_LOG_CONTEXT, format, va);
+    vsnprintf(item->context, MAX_LOG_CONTEXT, format, va);
     va_end(va);
-    exec(&item);
+    //exec(&item);
+    mq_.push(item);
     return true;
 }
 
@@ -175,13 +183,21 @@ bool XDLog::init()
     return true;
 }
 
+void XDLog::exit()
+{
+}
+
+void XDLog::stop()
+{
+}
+
 uint32 XDLog::run()
 {
     while(isRun_) {
-        while (1) {
-            event_->wait();
+        XDLogMsgItem *item = mq_.get(500);
+        if (item) {
+            exec(item);
+            free(item);
         }
-        XDLogMsgItem *item;
-        exec(item);
     }
 }

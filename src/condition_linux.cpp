@@ -33,8 +33,7 @@ XDErrorCode XDConditionLinuxImp::timedwait(uint32 millisecond)
     XDTimer::getAbsTimespec(&ts, millisecond);
     int32 ret = pthread_cond_timedwait(&cond_, mutex_->getMutex(), &ts);
     if (0 != ret) {
-        int32 err = XDGetLastError();
-        if (ETIMEDOUT == err) {
+        if (ETIMEDOUT == ret) {
             return XDError::E_XD_TIMEOUT;
         }
         return XDError::E_XD_SYSERROR;
