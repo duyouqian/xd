@@ -44,7 +44,7 @@ uint32 count = 0;
 int main(int argc, char **argv)
 {
     XDBlockingQueue<ItemNode*> queue;
-    ItemNode *item = ItemNodePool::instance().getNode();
+    ItemNode *item = ItemNodePool::getInstance().getNode();
     item->id = ++count;
     queue.push(item);
     ItemNode* t = queue.get();

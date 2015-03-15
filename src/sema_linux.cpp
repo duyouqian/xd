@@ -32,7 +32,7 @@ XDErrorCode XDSemaphoreLinuxImp::timedwait(uint32 millisecond)
     struct timespec ts;
     XDTimer::getAbsTimespec(&ts, millisecond);
     int32 ret;
-    while ((ret = sem_timedwait(&sem_, &ts)) == -1 && EINTR == XDGetLastError());
+    while ((ret = sem_timedwait(&sem_, &ts)) == -1 && EINTR == errno);
     if (0 != ret) {
         if (ETIMEDOUT == ret) {
             return XDError::E_XD_TIMEOUT;
@@ -45,7 +45,7 @@ XDErrorCode XDSemaphoreLinuxImp::timedwait(uint32 millisecond)
 XDErrorCode XDSemaphoreLinuxImp::signal()
 {
     int32 ret;
-    while ((ret = sem_post(&sem_)) == -1 && EINTR == XDGetLastError());
+    while ((ret = sem_post(&sem_)) == -1 && EINTR == errno);
     if (0 != ret) {
         return XDError::E_XD_SYSERROR;
     }

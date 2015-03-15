@@ -17,7 +17,7 @@ template <typename Type>
 class XDSingleton
 {
 public:
-    static Type& instance()
+    static Type& getInstance()
     {
         pthread_once(&once_, &XDSingleton::init);
         return *instance_;

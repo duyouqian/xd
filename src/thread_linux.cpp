@@ -207,9 +207,11 @@ bool XDThreadLinuxImp::createInternal(XDIRunnable *runner, const char *tName, XD
 {
     runnable_ = runner;
     threadGroup_ = threadGroup;
-    bool eventCreate = false;
-    syncEvent_ = new XDSyncEvent();
-    eventCreate = syncEvent_->create(true);
+    //bool eventCreate = false;
+    //syncEvent_ = new XDSyncEvent();
+    //eventCreate = syncEvent_->create(false);
+    syncEvent_ = XDSyncEvent::createEvent(false);
+    check(syncEvent_);
     const char *tt = "111";
     std::string tmpName(tName ? tName : "XD Server V1.0.0");
     threadName_.assign(tmpName);

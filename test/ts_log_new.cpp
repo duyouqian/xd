@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     }
     XDTimer::safeSleepByS(2);
     isStop = true;
-    XDTimer::safeSleepByS(2);
+    threadGroup.waitForComplateionAll();
     XDLOG_close();
     return 0;
 }

@@ -8,6 +8,7 @@
 class XDSyncEventLinuxImp : public XDIEvent
 {
 public:
+    static XDSyncEventLinuxImp* createEvent(bool isManualReset = false);
     XDSyncEventLinuxImp();
     ~XDSyncEventLinuxImp();
     // 创建
