@@ -37,3 +37,6 @@ TARGET_LINK_LIBRARIES(ts_log_new xd)
 ADD_EXECUTABLE(ts_blockqueue ts_blockqueue.cpp)
 TARGET_LINK_LIBRARIES(ts_blockqueue xd)
 
+ADD_EXECUTABLE(ts_shareptr ts_shareptr.cpp)
+TARGET_LINK_LIBRARIES(ts_shareptr xd)
+

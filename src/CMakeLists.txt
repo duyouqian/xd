@@ -5,7 +5,8 @@ SET(BASE_SOURCE mutex.cpp
                 thread.cpp
                 event.cpp
                 thread_group.cpp
-                log.cpp)
+                log.cpp
+                shareable.cpp)
 IF(UNIX)
     MESSAGE("UNIX")
     SET(BASE_SOURCE ${BASE_SOURCE} 

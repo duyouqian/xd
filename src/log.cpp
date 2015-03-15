@@ -70,12 +70,16 @@ bool XDLog::open(const char *path, uint8 outputLv)
 bool XDLog::close()
 {
     isInit_ = false;
-    isRun_ = false;
     if (event_) {
         event_->trigger();
         delete event_;
         event_ = NULL;
     }
+    while (!mq_.isEmpty()) {
+        printf("mq:%s\n", mq_.dump().c_str());
+        XDTimer::safeSleepByMS(500);
+    }
+    isRun_ = false;
     if (thread_) {
         thread_->kill(true);
         delete thread_;

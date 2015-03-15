@@ -7,8 +7,7 @@
 #include "error.h"
 #include "types.h"
 
-#include <stdio.h>
-
+#include <string.h>
 
 #define MAX_QUEUE 2048
 #define MASK_QUEUE 2047 // MAX_QUEUE - 1
@@ -69,6 +68,14 @@ public:
         return NULL;
     }
 
+    std::string dump()
+    {
+        char info[255];
+        snprintf(info, sizeof(info), "[MQ Dump]:[writeCount:%d, readCount:%d, writePos:%d, readCount:%d]", writeCount_, readCount_, getIndex(writeCount_), getIndex(readCount_));
+        std::string infoStr(info);
+        return infoStr;
+    }
+
 public:
     FORCEINLINE uint32 getIndex(uint32 pos)
     {
@@ -83,6 +90,11 @@ public:
     FORCEINLINE bool isFull()
     {
         return writeCount_ - readCount_ >= MAX_QUEUE;
+    }
+
+    FORCEINLINE int32 size()
+    {
+        return writeCount_ - readCount_;
     }
 
 private:

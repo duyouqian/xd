@@ -14,5 +14,7 @@
 #include "file.h"
 #include "log.h"
 #include "blocking_queue.h"
+#include "shareable.h"
+#include "shared_pointer.h"
 
 #endif // end xd_common_h

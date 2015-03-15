@@ -10,6 +10,10 @@ XDRefCounter::XDRefCounter(int32 value)
 {
 }
 
+XDRefCounter::~XDRefCounter()
+{
+}
+
 int32 XDRefCounter::increment()
 {
     return XDAtomics::interlockedIncrement(&counter_);
