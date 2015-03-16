@@ -40,3 +40,6 @@ TARGET_LINK_LIBRARIES(ts_blockqueue xd)
 ADD_EXECUTABLE(ts_shareptr ts_shareptr.cpp)
 TARGET_LINK_LIBRARIES(ts_shareptr xd)
 
+ADD_EXECUTABLE(ts_ioevent ts_ioevent.cpp)
+TARGET_LINK_LIBRARIES(ts_ioevent xd)
+
