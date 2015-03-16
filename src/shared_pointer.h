@@ -42,6 +42,25 @@ public:
         }
     }
 
+    template <typename T>
+    XDSharedPtr& operator = (const XDSharedPtr<T> &other)
+    {
+        if (ptr_ != other.get()) {
+            if (NULL != other.get()) {
+                other.get()->inc();
+            }
+            XDType *ptr = ptr_;
+            ptr_ = other.get();
+            if (NULL != ptr) {
+                if (0 == ptr->dec()) {
+                    delete ptr;
+                    ptr = NULL;
+                }
+            }
+        }
+        return *this;
+    }
+
     XDSharedPtr& operator = (const XDSharedPtr &other)
     {
         if (ptr_ != other.ptr_) {
