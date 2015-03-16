@@ -41,6 +41,28 @@ typedef signed long long    int64;
 
 // errorcode
 typedef int32 XDErrorCode;
+// ioeventtype
+//typedef int32 XDIOEventType;
+// pthread 执行对象
+typedef void* (*ThreadEntryPoint)(void*);
+
+// 操作类型定义
+typedef enum
+{
+    XDObjOper_NONE,          // 无
+    XDObjOper_ADD,           // 添加
+    XDObjOper_DEL,           // 移除
+    XDObjOper_CHANGE,        // 更改
+} XDObjectOper;
+
+// IO事件类型定义
+typedef enum
+{
+    XDIOEventType_NONE  = 0,            // 无
+    XDIOEventType_READ  = 1 << 0,       // 读
+    XDIOEventType_WRITE = 1 << 1,       // 写
+    XDIOEventType_ERROR = 1 << 2,       // 错误
+} XDIOEventType;
 
 #define MAX_PATH_LEN 512
 #define MAX_FILENAME_LEN 128
@@ -56,24 +78,12 @@ private:
     void operator& () const;
 } nullptr_t = {};
 
-// pthread 执行对象
-typedef void* (*ThreadEntryPoint)(void*);
-
 #ifndef NULL
     #define NULL nullptr_t
 #endif
 
 #include <assert.h>
 #define check(exp) assert(exp)
-
-// 强制内联
-#ifdef _MSC_VER_ // for MSVC
-    #define FORCEINLINE __forceinline
-#elif defined __GNUC__ // for gcc on Linux/Apple OS X
-    #define FORCEINLINE __inline__ __attribute__((always_inline))
-#else
-    #define FORCEINLINE
-#endif
 
 #ifdef __unix__
     // unix or linux
@@ -84,16 +94,20 @@ typedef void* (*ThreadEntryPoint)(void*);
     #endif
     #define STDCALL
     #define PTHREAD_NULL                        -1
+    // 强制内联
+    #define FORCEINLINE                         __inline__ __attribute__((always_inline))
 #elif __APPLE__
     // mac os
     #define PLATFORM_64BITS                     0
     #define STDCALL
     #define PTHREAD_NULL -1
+    #define FORCEINLINE                         __inline__ __attribute__((always_inline))
 #else
     // win
     #define PLATFORM_64BITS                     0
     #define STDCALL                             __stdcall
     #define PTHREAD_NULL                        NULL
+    #define FORCEINLINE                         __forceinline
 #endif
 
 

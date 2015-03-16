@@ -16,5 +16,6 @@
 #include "blocking_queue.h"
 #include "shareable.h"
 #include "shared_pointer.h"
+#include "callback.h"
 
 #endif // end xd_common_h

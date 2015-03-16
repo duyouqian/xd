@@ -42,6 +42,7 @@ public:
         }
     }
 
+    // T 必须为XDType的子类
     template <typename T>
     XDSharedPtr& operator = (const XDSharedPtr<T> &other)
     {

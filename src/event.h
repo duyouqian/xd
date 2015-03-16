@@ -11,5 +11,4 @@
     // win
 #endif
 
-
 #endif // end xd_event_h
