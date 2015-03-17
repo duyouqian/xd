@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include <endian.h>
+#include <arpa/inet.h>
 
 namespace XDSocketOpt
 {
@@ -37,6 +38,26 @@ namespace XDSocketOpt
     {
         return be16toh(value);
     }
+
+    // socket 操作
+    // 设置无堵塞fd
+    int32 setNonblocking(int32 fd);
+    // 在fork时关闭fd
+    int32 setCloseOnExec(int32 fd);
+    // 创建无堵塞fd
+    SOCKET createNonblockingOrDie();
+    // 连接
+    int32 connect(SOCKET fd, const sockaddr &addr);
+    // 绑定
+    int32 bind(SOCKET fd, const sockaddr &addr);
+    // 监听
+    int32 listen(SOCKET fd);
+    // 接收
+    SOCKET accept(SOCKET fd, sockaddr_in *addr);
+    // 关闭
+    void close(int32 fd);
+
+
 }; // end namespace XDSpcketOpt
 
 #endif // end xd_socketoptimp_linux_h
