@@ -3,6 +3,8 @@
 #include <fcntl.h>
 #include <sys/uio.h>
 #include <unistd.h>
+#include <netinet/tcp.h>
+#include <netinet/in.h>
 
 int32 XDSocketOpt::setNonblocking(int32 fd)
 {
@@ -185,4 +187,47 @@ bool XDSocketOpt::peek(SOCKET fd)
     char buffer[1];
     int32 ret = recv(fd, buffer, 1, MSG_PEEK | MSG_DONTWAIT);
     return ret > 0;
+}
+
+void XDSocketOpt::setSockTcpNoDelag(SOCKET fd, const void *optval, int32 optlen)
+{
+    int32 ret = ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, optval, static_cast<socklen_t>(optlen));
+    if (-1 == ret) {
+        XDLOG_merror("[XDSocketOpt] fd:%d设置tcpNodelag value:%d error err:%d, %s", fd, optval, errno, strerror(errno));
+    }
+}
+
+void XDSocketOpt::setSockReuseAddr(SOCKET fd, const void *optval, int32 optlen)
+{
+    int32 ret = ::setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, optval, static_cast<socklen_t>(optlen));
+    if (-1 == ret) {
+        XDLOG_merror("[XDSocketOpt] fd:%d设置reuseAddr value:%d error err:%d, %s", fd, optval, errno, strerror(errno));
+    }
+}
+
+void XDSocketOpt::setSockReusePort(SOCKET fd, const void *optval, int32 optlen)
+{
+    #ifdef SO_REUSEPORT
+        int32 ret = ::setsockopt(fd, SOL_SOCKET, SO_REUSEPORT, optval, static_cast<socklen_t>(optlen));
+        if (-1 == ret) {
+            XDLOG_merror("[XDSocketOpt] fd:%d设置reuseport value:%d error err:%d, %s", fd, optval, errno, strerror(errno));
+        }
+    #else
+        XDLOG_mwarn("[XDSocketOpt] SO_REUSEPORT 没定义");
+    #endif
+}
+void XDSocketOpt::setSockKeepAlive(SOCKET fd, const void *optval, int32 optlen)
+{
+    int32 ret = ::setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE, optval, static_cast<socklen_t>(optlen));
+    if (-1 == ret) {
+        XDLOG_merror("[XDSocketOpt] fd:%d设置keepalive value:%d error err:%d, %s", fd, optval, errno, strerror(errno));
+    }
+}
+
+void XDSocketOpt::shutdownWrite(SOCKET fd)
+{
+    int32 ret = ::shutdown(fd, SHUT_WR);
+    if (-1 == ret) {
+        XDLOG_merror("[XDSocketOpt] fd:%dshutdownwrite failure error err:%d, %s", fd, errno, strerror(errno));
+    }
 }

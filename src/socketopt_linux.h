@@ -72,6 +72,13 @@ namespace XDSocketOpt
     bool isSelfConnect(SOCKET fd);
     // 判断缓冲区是否还有数据可读
     bool peek(SOCKET fd);
+    // 设置SOCKET选项
+    void setSockTcpNoDelag(SOCKET fd, const void *optval, int32 optlen);
+    void setSockReuseAddr(SOCKET fd, const void *optval, int32 optlen);
+    void setSockReusePort(SOCKET fd, const void *optval, int32 optlen);
+    void setSockKeepAlive(SOCKET fd, const void *optval, int32 optlen);
+    // 关闭时写
+    void shutdownWrite(SOCKET fd);
 
 }; // end namespace XDSpcketOpt
 
