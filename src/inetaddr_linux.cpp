@@ -7,6 +7,14 @@
 static const in_addr_t anyAddr = INADDR_ANY;
 static const in_addr_t loopbackAddr = INADDR_LOOPBACK;
 
+XDIpv4AddrLinuxImp::XDIpv4AddrLinuxImp()
+{
+}
+
+XDIpv4AddrLinuxImp::~XDIpv4AddrLinuxImp()
+{
+}
+
 XDIpv4AddrLinuxImp::XDIpv4AddrLinuxImp(uint16 port, bool loopbackOnly /* = false */)
 {
     bzero(&addr_, sizeof(addr_));
@@ -58,6 +66,11 @@ uint16 XDIpv4AddrLinuxImp::getPort() const
 const sockaddr& XDIpv4AddrLinuxImp::getSockAddr() const
 {
     return (sockaddr&)addr_;
+}
+
+sockaddr_in* XDIpv4AddrLinuxImp::getSockAddr()
+{
+    return &addr_;
 }
 
 void XDIpv4AddrLinuxImp::setSockAddr(const sockaddr_in &addr)
