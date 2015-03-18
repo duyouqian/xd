@@ -6,7 +6,8 @@ SET(BASE_SOURCE mutex.cpp
                 event.cpp
                 thread_group.cpp
                 log.cpp
-                shareable.cpp)
+                shareable.cpp
+                event_loop.cpp)
 IF(UNIX)
     MESSAGE("UNIX")
     SET(BASE_SOURCE ${BASE_SOURCE} 
@@ -16,7 +17,10 @@ IF(UNIX)
                     timer_linux.cpp
                     thread_linux.cpp
                     event_linux.cpp
-                    file_linux.cpp)
+                    file_linux.cpp
+                    socket_linux.cpp
+                    socketopt_linux.cpp
+                    inetaddr_linux.cpp)
 ELSEIF(APPLE)
     MESSAGE("APPLE")
 ELSEIF(WIN32)

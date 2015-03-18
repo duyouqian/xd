@@ -17,5 +17,12 @@
 #include "shareable.h"
 #include "shared_pointer.h"
 #include "callback.h"
+#include "event.h"
+#include "event_loop.h"
+//#include "poller.h"
+#include "socket.h"
+#include "inetaddr.h"
+#include "reference_count.h"
+#include "base_object.h"
 
 #endif // end xd_common_h

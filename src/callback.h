@@ -4,16 +4,15 @@
 #include "shareable.h"
 #include "shared_pointer.h"
 
-class XDBaseCallBack : public XDShareable
+class XDIOEventReadCallBack : public XDShareable
 {
 public:
-    virtual bool exec() = 0; // IO事件回调执行接口
+    virtual bool exec()
+    {
+        return true;
+    }
 };
 
-class XDIOEventCallBack : public XDBaseCallBack
-{
-};
-
-typedef XDSharedPtr<XDIOEventCallBack> XDIOEventCallBackPtr;
+typedef XDSharedPtr<XDIOEventReadCallBack> XDIOEventReadCallBackPtr;
 
 #endif // end xd_callback_h

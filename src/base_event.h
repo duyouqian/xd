@@ -30,13 +30,12 @@ class XDIOEvent : public XDNoncopyable
 public:
     XDIOEvent();
     virtual ~XDIOEvent();
-    virtual bool changeEvent(XDObjectOper oper, XDIOEventType event, XDIOEventCallBackPtr func);
     virtual bool handleEvent();
 protected:
     uint32 event_;
-    XDIOEventCallBackPtr readFunc_;
-    XDIOEventCallBackPtr writeFunc_;
-    XDIOEventCallBackPtr errorFunc_;
+    //XDIOEventCallBackPtr readFunc_;
+    //XDIOEventCallBackPtr writeFunc_;
+    //XDIOEventCallBackPtr errorFunc_;
 };
 
 #endif // end xd_base_event_h
