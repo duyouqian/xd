@@ -80,6 +80,18 @@ public:
         return *this;
     }
 
+    void setNull()
+    {
+        XDType *ptr = ptr_;
+        ptr_ = NULL;
+        if (NULL != ptr) {
+            if (0 == ptr->dec()) {
+                delete ptr;
+                ptr = NULL;
+            }
+        }
+    }
+
     XDType* get() const
     {
         return ptr_;
