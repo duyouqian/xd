@@ -43,3 +43,9 @@ TARGET_LINK_LIBRARIES(ts_shareptr xd)
 ADD_EXECUTABLE(ts_ioevent ts_ioevent.cpp)
 TARGET_LINK_LIBRARIES(ts_ioevent xd)
 
+ADD_EXECUTABLE(ts_inetaddr ts_inetaddr.cpp)
+TARGET_LINK_LIBRARIES(ts_inetaddr xd)
+
+ADD_EXECUTABLE(ts_socket ts_socket.cpp)
+TARGET_LINK_LIBRARIES(ts_socket xd)
+

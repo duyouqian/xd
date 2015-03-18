@@ -24,7 +24,17 @@ public:
     {
         XDLOG_minfo("Test2 destroy");
     }
+};
 
+class Test3
+{
+public:
+    Test3(int32 t1)
+    {
+        t1_ = t1;
+    }
+private:
+    int32 t1_;
 };
 
 int main(int argc, char **argv)
@@ -47,9 +57,14 @@ int main(int argc, char **argv)
     if (t.isValid())
         XDLOG_minfo("t:%d\n", t->getCount());
     {
-        XDSharedPtr<Test> tmp(NULL);
-        t = tmp;
+        //XDSharedPtr<Test> tmp(NULL);
+        //t = tmp;
     }
+    t.setNull();
+
+    Test3* t3 = (Test3*)malloc(sizeof(Test3));
+    new (t3)Test3(10);
+    free(t3);
     XDLOG_close();
     return 0;
 }
