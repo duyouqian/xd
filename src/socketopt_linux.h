@@ -52,11 +52,26 @@ namespace XDSocketOpt
     int32 bind(SOCKET fd, const sockaddr &addr);
     // 监听
     int32 listen(SOCKET fd);
-    // 接收
+    // 接收 并返回clinet SOCKET id
     SOCKET accept(SOCKET fd, sockaddr_in *addr);
     // 关闭
     void close(int32 fd);
-
+    // 普通读
+    int32 read(int32 fd, void *buffer, int32 len);
+    // 普通写
+    int32 write(int32 fd, const void *buffer, int32 len);
+    // 集中读
+    int32 readv(int32 fd, const struct iovec *iov, int32 iovCnt);
+    // 获取socket 错误码
+    int32 getSockError(SOCKET fd);
+    // 根据SOCKET 获取本地地址
+    struct sockaddr_in getLocalAddrWithSock(SOCKET fd);
+    // 根据SOCKET 获取对端地址
+    struct sockaddr_in getPeerAddrWithSock(SOCKET fd);
+    // 判断SOCKET是自己的连接
+    bool isSelfConnect(SOCKET fd);
+    // 判断缓冲区是否还有数据可读
+    bool peek(SOCKET fd);
 
 }; // end namespace XDSpcketOpt
 
