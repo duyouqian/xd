@@ -85,6 +85,11 @@ private:
 #include <assert.h>
 #define check(exp) assert(exp)
 
+// socket
+typedef int32 TRANSPORTID;
+typedef int32 SOCKET;
+#define INVALID_SOCKET -1
+
 #ifdef __unix__
     // unix or linux
     #if defined(_LINUX64) || defined(_LP64)
