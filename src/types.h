@@ -62,6 +62,7 @@ typedef enum
     XDIOEventType_READ  = 1 << 0,       // 读
     XDIOEventType_WRITE = 1 << 1,       // 写
     XDIOEventType_ERROR = 1 << 2,       // 错误
+    XDIOEventType_CLOSE = 1 << 2,       // 关闭
 } XDIOEventType;
 
 #define MAX_PATH_LEN 512
@@ -89,6 +90,7 @@ private:
 typedef int32 TRANSPORTID;
 typedef int32 SOCKET;
 #define INVALID_SOCKET -1
+typedef int32 FD;
 
 #ifdef __unix__
     // unix or linux

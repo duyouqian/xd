@@ -5,7 +5,7 @@ XDIOEventLoop loop;
 class ReadCallBack : public XDIOEventReadCallBack
 {
 public:
-    bool exec()
+    bool exec(uint64 timestamp)
     {
         XDLOG_minfo("exec");
     }

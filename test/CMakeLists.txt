@@ -49,3 +49,9 @@ TARGET_LINK_LIBRARIES(ts_inetaddr xd)
 ADD_EXECUTABLE(ts_socket ts_socket.cpp)
 TARGET_LINK_LIBRARIES(ts_socket xd)
 
+ADD_EXECUTABLE(ts_callback ts_callback.cpp)
+TARGET_LINK_LIBRARIES(ts_callback xd)
+
+ADD_EXECUTABLE(ts_channel ts_channel.cpp)
+TARGET_LINK_LIBRARIES(ts_channel xd)
+
