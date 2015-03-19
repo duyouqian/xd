@@ -13,6 +13,7 @@ public:
     ~XDIOEventLoop();
     // 主循环 会调用poller->poll来获取IO事件
     void loop();
+    void checkInLoopThread();
 private:
     //XDPoller *poller_;
     uint32 threadID_;

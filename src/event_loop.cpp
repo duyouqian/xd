@@ -15,3 +15,7 @@ void XDIOEventLoop::loop()
 {
     XDLOG_minfo("[IOEventLoop] loop run threadID:%u", threadID_);
 }
+
+void XDIOEventLoop::checkInLoopThread()
+{
+}
