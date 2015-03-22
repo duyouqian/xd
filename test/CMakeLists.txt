@@ -55,3 +55,6 @@ TARGET_LINK_LIBRARIES(ts_callback xd)
 ADD_EXECUTABLE(ts_channel ts_channel.cpp)
 TARGET_LINK_LIBRARIES(ts_channel xd)
 
+ADD_EXECUTABLE(ts_eventloop ts_eventloop.cpp)
+TARGET_LINK_LIBRARIES(ts_eventloop xd)
+

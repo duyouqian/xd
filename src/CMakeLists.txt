@@ -22,7 +22,8 @@ IF(UNIX)
                     file_linux.cpp
                     socket_linux.cpp
                     socketopt_linux.cpp
-                    inetaddr_linux.cpp)
+                    inetaddr_linux.cpp
+                    epoll.cpp)
 ELSEIF(APPLE)
     MESSAGE("APPLE")
 ELSEIF(WIN32)

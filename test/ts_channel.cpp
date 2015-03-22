@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     channel.setEvent(XDIOEventType_READ, true);
     channel.setEvent(XDIOEventType_WRITE | XDIOEventType_ERROR, true);
 
-    channel.hasEvent(XDTimer::getCurTimestampByMS());
+    channel.handleEvent(XDTimer::getCurTimestampByMS());
 
     XDLOG_close();
     return 0;

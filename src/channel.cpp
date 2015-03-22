@@ -1,20 +1,50 @@
 #include "channel.h"
+#include "event_loop.h"
 
 XDChannel::XDChannel(XDIOEventLoop *loop,
                      FD fd)
          : loop_(loop)
          , fd_(fd)
+         , index_(-1)
          , event_(XDIOEventType_NONE)
+         , revent_(XDIOEventType_NONE)
+         , addToLoop_(false)
+         , eventHandleing_(false)
 {
 }
 
 XDChannel::~XDChannel()
 {
+    check(!eventHandleing_);
+    check(!addToLoop_);
+    if (loop_->isInLoopThread()) {
+        check(!loop_->hasChannel(this));
+    }
 }
 
-const FD XDChannel::getFd() const
+const FD XDChannel::fd() const
 {
     return fd_;
+}
+
+const int32 XDChannel::index() const
+{
+    return index_;
+}
+
+const int32 XDChannel::events() const
+{
+    return event_;
+}
+
+void XDChannel::setIndex(int32 newIndex)
+{
+    index_ = newIndex;
+}
+
+void XDChannel::setRevents(int32 value)
+{
+    revent_ = value;
 }
 
 void XDChannel::setReadCallBack(const XDIOEventReadCallBackPtr &cb)
@@ -77,8 +107,9 @@ void XDChannel::setEvent(uint32 type, bool on)
     update();
 }
 
-void XDChannel::hasEvent(uint64 timestamp)
+void XDChannel::handleEvent(uint64 timestamp)
 {
+    eventHandleing_ = true;
     if ((event_& XDIOEventType_READ) && readCallBack_.isValid()) {
         // 读事件
         readCallBack_->exec(timestamp);
@@ -95,8 +126,23 @@ void XDChannel::hasEvent(uint64 timestamp)
         // 关闭事件
         closeCallBack_->exec();
     }
+    eventHandleing_ = false;
 }
 
 void XDChannel::update()
 {
+    addToLoop_ = true;
+    loop_->updateChannel(this);
+}
+
+void XDChannel::remove()
+{
+    check(isNoneEvent());
+    addToLoop_ = false;
+    loop_->removeChannel(this);
+}
+
+XDIOEventLoop* XDChannel::ownerLoop()
+{
+    return loop_;
 }
