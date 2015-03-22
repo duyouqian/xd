@@ -108,7 +108,7 @@ void XDIOEventLoop::quit()
     quit_ = true;
     XDLOG_minfo("[IOEventLoop] 退出 threadID:%u", XDThread::getCurrentThreadID());
     if (!isInLoopThread()) {
-        weakup();
+        wakeup();
     }
 }
 
@@ -144,7 +144,7 @@ void XDIOEventLoop::wakeup()
 {
     XDLOG_minfo("[IOEventLoop] 唤醒");
     uint64 one = 1;
-    int32 n = XDSocketOpt::write(fd_, &one, sizeof(one));
+    int32 n = XDSocketOpt::write(wakeupFd_, &one, sizeof(one));
     if (n != sizeof(one)) {
         XDLOG_merror("[WakeupHandRead] reads:%d bytes instead of 8", n);
     }

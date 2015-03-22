@@ -167,7 +167,7 @@ std::string XDChannel::eventsToString() const
 std::string XDChannel::eventsToString(int32 fd, int32 ev)
 {
     std::ostringstream oss;
-    oss << fd << ": ";
+    oss << "fd=" << fd << ": ";
     if (ev & XDIOEventType_READ)
         oss << "READ ";
     if (ev & XDIOEventType_WRITE)

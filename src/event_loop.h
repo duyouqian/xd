@@ -49,7 +49,6 @@ public:
 
     void checkInLoopThread();
 private:
-    static const char* operToString(int32 op);
     void doPendingFunctors();
     void printActiveChannels();
     void abortNotInLoopThread();

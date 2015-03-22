@@ -2,8 +2,7 @@
 #define XD_BASE_POLL_H
 
 #include "noncopyable.h"
-//#include "event_loop.h"
-//#include "channel.h"
+#include "shareable.h"
 #include "types.h"
 #include <vector>
 #include <map>
@@ -11,7 +10,7 @@
 class XDIOEventLoop;
 class XDChannel;
 // IO多路复用接口
-class XDBasePoller : public XDNoncopyable
+class XDBasePoller : public XDShareable
 {
 public:
     explicit XDBasePoller(XDIOEventLoop *loop);

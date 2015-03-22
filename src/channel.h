@@ -4,12 +4,13 @@
 #include "noncopyable.h"
 //#include "event_loop.h"
 #include "callback.h"
+#include "shareable.h"
 #include "types.h"
 #include <string>
 
 class XDIOEventLoop;
 // 处理FD上的IO事件和改变
-class XDChannel : public XDNoncopyable
+class XDChannel : public XDShareable
 {
 public:
     XDChannel(XDIOEventLoop *loop,
