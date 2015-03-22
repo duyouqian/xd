@@ -1,5 +1,6 @@
 #include "channel.h"
 #include "event_loop.h"
+#include <sstream>
 
 XDChannel::XDChannel(XDIOEventLoop *loop,
                      FD fd)
@@ -107,22 +108,28 @@ void XDChannel::setEvent(uint32 type, bool on)
     update();
 }
 
+void XDChannel::disableAll()
+{
+    event_ = XDIOEventType_NONE;
+    update();
+}
+
 void XDChannel::handleEvent(uint64 timestamp)
 {
     eventHandleing_ = true;
-    if ((event_& XDIOEventType_READ) && readCallBack_.isValid()) {
+    if ((revent_& XDIOEventType_READ) && readCallBack_.isValid()) {
         // 读事件
         readCallBack_->exec(timestamp);
     }
-    if ((event_ & XDIOEventType_WRITE) && writeCallBack_.isValid()) {
+    if ((revent_ & XDIOEventType_WRITE) && writeCallBack_.isValid()) {
         // 写事件
         writeCallBack_->exec();
     }
-    if ((event_& XDIOEventType_ERROR) && errorCallBack_.isValid()) {
+    if ((revent_& XDIOEventType_ERROR) && errorCallBack_.isValid()) {
         // 错误事件
         errorCallBack_->exec();
     }
-    if ((event_& XDIOEventType_CLOSE) && closeCallBack_.isValid()) {
+    if ((revent_& XDIOEventType_CLOSE) && closeCallBack_.isValid()) {
         // 关闭事件
         closeCallBack_->exec();
     }
@@ -145,4 +152,29 @@ void XDChannel::remove()
 XDIOEventLoop* XDChannel::ownerLoop()
 {
     return loop_;
+}
+
+std::string XDChannel::reventsToString() const
+{
+    return eventsToString(fd_, revent_);
+}
+
+std::string XDChannel::eventsToString() const
+{
+    return eventsToString(fd_, event_);
+}
+
+std::string XDChannel::eventsToString(int32 fd, int32 ev)
+{
+    std::ostringstream oss;
+    oss << fd << ": ";
+    if (ev & XDIOEventType_READ)
+        oss << "READ ";
+    if (ev & XDIOEventType_WRITE)
+        oss << "WRITE";
+    if (ev & XDIOEventType_ERROR)
+        oss << "ERROR";
+    if (ev & XDIOEventType_CLOSE)
+        oss << "CLOSE";
+    return oss.str().c_str();
 }

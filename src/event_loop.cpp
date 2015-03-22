@@ -54,6 +54,7 @@ XDIOEventLoop::XDIOEventLoop()
              , wakeupChannel_(new XDChannel(this, wakeupFd_))
              , looping_(false)
              , eventHandleing_(false)
+             , callingPendingFunctors_(false)
              , quit_(false)
 {
     XDLOG_minfo("[IOEventLoop] 创建IOEventLoop");
@@ -70,11 +71,9 @@ XDIOEventLoop::XDIOEventLoop()
 XDIOEventLoop::~XDIOEventLoop()
 {
     XDLOG_minfo("[IOEventLoop] IOEventLoop");
-    wakeupChannel_->setEvent(XDIOEventType_READ, false);
+    wakeupChannel_->disableAll();
     wakeupChannel_->remove();
     XDSocketOpt::close(wakeupFd_);
-    delete wakeupChannel_;
-    delete poller_;
     loopInThisThread = NULL;
 }
 
@@ -87,6 +86,7 @@ void XDIOEventLoop::loop()
         activeChannels_.clear();
         pollReturnTimestamp_ = poller_->poll(POLLTIMEOUTMS, &activeChannels_);
         // printf debug info
+        printActiveChannels();
         eventHandleing_ = true;
         for (std::vector<XDChannel*>::iterator it = activeChannels_.begin();
         it != activeChannels_.end();
@@ -96,6 +96,8 @@ void XDIOEventLoop::loop()
         }
         currentActiveChannel_ = NULL;
         eventHandleing_ = false;
+        // 执行其他线程过来的
+        doPendingFunctors();
     }
     XDLOG_minfo("[IOEventLoop] loop stop threadID:%u", threadID_);
     looping_ = false;
@@ -138,11 +140,68 @@ bool XDIOEventLoop::hasChannel(XDChannel *channel)
     return poller_->hasChannel(channel);
 }
 
-void XDIOEventLoop::weakup()
+void XDIOEventLoop::wakeup()
 {
     XDLOG_minfo("[IOEventLoop] 唤醒");
+    uint64 one = 1;
+    int32 n = XDSocketOpt::write(fd_, &one, sizeof(one));
+    if (n != sizeof(one)) {
+        XDLOG_merror("[WakeupHandRead] reads:%d bytes instead of 8", n);
+    }
+}
+
+void XDIOEventLoop::runInLoop(XDSharedPtr<XDFunction> cb)
+{
+    if (isInLoopThread()) {
+        cb->exec();
+    } else {
+        queueInLoop(cb);
+    }
+}
+
+void XDIOEventLoop::queueInLoop(XDSharedPtr<XDFunction> cb)
+{
+    {
+        XDGuardMutex lock(&mutex_);
+        pendingFunctors_.push_back(cb);
+    }
+    if (!isInLoopThread() || callingPendingFunctors_) {
+        wakeup();
+    }
+}
+
+void XDIOEventLoop::printActiveChannels()
+{
+    for (std::vector<XDChannel*>::const_iterator it = activeChannels_.begin();
+         it != activeChannels_.end(); ++it)
+    {
+        const XDChannel* ch = *it;
+        XDLOG_minfo("{%s}", ch->reventsToString().c_str());
+    }
+}
+
+void XDIOEventLoop::doPendingFunctors()
+{
+    std::vector<XDSharedPtr<XDFunction> > temp;
+    callingPendingFunctors_ = true;
+    {
+        XDGuardMutex lock(&mutex_);
+        temp.swap(pendingFunctors_);
+    }
+    for (int32 i = 0; i < temp.size(); ++i) {
+        temp[i]->exec();
+    }
+    callingPendingFunctors_ = false;
 }
 
 void XDIOEventLoop::checkInLoopThread()
 {
+    if (!isInLoopThread()) {
+        abortNotInLoopThread();
+    }
+}
+
+void XDIOEventLoop::abortNotInLoopThread()
+{
+    XDLOG_mfatal("IOEventLoop::abortNotInLoopThread - IOEventLoop 已经创建 线程ID=%u, 当前线程ID=%u", threadID_, XDThread::getCurrentThreadID());
 }

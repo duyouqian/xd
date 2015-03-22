@@ -5,6 +5,7 @@
 //#include "event_loop.h"
 #include "callback.h"
 #include "types.h"
+#include <string>
 
 class XDIOEventLoop;
 // 处理FD上的IO事件和改变
@@ -23,6 +24,8 @@ public:
 
     // 设置 读写关闭错误事件
     void setEvent(uint32 type, bool on);
+    // 取消全部事件
+    void disableAll();
     // 是否为空事件
     FORCEINLINE bool isNoneEvent()
     {
@@ -41,10 +44,13 @@ public:
 
     const int32 events() const;
     void setRevents(int32 value);
+    
+    std::string reventsToString() const;
+    std::string eventsToString() const;
 
 private:
     void update();
-
+    static std::string eventsToString(int32 fd, int32 ev);
 
 private:
     XDIOEventLoop *loop_;

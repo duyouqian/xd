@@ -5,8 +5,14 @@
 #include "shared_pointer.h"
 #include "types.h"
 
+class XDFunction : public XDShareable
+{
+public:
+    virtual bool exec() = 0;
+};
+
 // 无参数回调
-class XDIOEventCallBack : public XDShareable
+class XDIOEventCallBack : public XDFunction
 {
 public:
     virtual bool exec() = 0;
