@@ -3,12 +3,13 @@
 
 #include "noncopyable.h"
 #include "callback.h"
+#include "shareable.h"
 #include "event_loop_thread.h"
 #include "types.h"
 #include <string>
 #include <vector>
 
-class XDIOEventLoopThreadPool : public XDNoncopyable
+class XDIOEventLoopThreadPool : public XDShareable
 {
 public:
     XDIOEventLoopThreadPool(XDIOEventLoop *baseLoop,

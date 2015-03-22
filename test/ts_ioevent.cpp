@@ -2,10 +2,10 @@
 
 XDIOEventLoop loop;
 
-class ReadCallBack : public XDIOEventReadCallBack
+class ReadCallBack : public XDIOEventCallBack
 {
 public:
-    bool exec(uint64 timestamp)
+    bool readCallBack(uint64 timestamp)
     {
         XDLOG_minfo("exec");
     }

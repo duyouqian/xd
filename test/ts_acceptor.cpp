@@ -1,9 +1,9 @@
 #include "common.h"
 
-class NewConnectCallBack : public XDIOEventNewConnectionCallBack
+class NewConnectCallBack : public XDIOEventCallBack
 {
 public:
-    bool exec(FD fd, const XDIpv4Addr &addr)
+    bool newConnectionCallBack(FD fd, const XDIpv4Addr &addr)
     {
         XDLOG_minfo("[NewConnection] 新连接 fd:%d addr:%s", fd, addr.getIpAndPort().c_str());
         return true;
@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     XDIOEventLoop loop;
     XDIpv4Addr addr(7000);
     XDAcceptor accept(&loop, addr, true);
-    XDSharedPtr<XDIOEventNewConnectionCallBack> cb(new NewConnectCallBack());
+    XDIOEventCallBackPtr cb(new NewConnectCallBack());
     accept.setNewConnectionCallBack(cb);
     accept.listen();
     loop.loop();
