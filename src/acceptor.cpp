@@ -75,7 +75,7 @@ void XDAcceptor::listen()
     acceptorChannel_.setEvent(XDIOEventType_READ, true);
 }
 
-void XDAcceptor::setNewConnectionCallBack(XDIOEventNewConnectionCallBackPtr cb)
+void XDAcceptor::setNewConnectionCallBack(XDIOEventNewConnectionCallBackPtr &cb)
 {
     newConnectionCallBack_ = cb;
 }

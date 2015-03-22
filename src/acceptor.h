@@ -22,7 +22,7 @@ public:
     bool listenning() const;
     void listen();
     
-    void setNewConnectionCallBack(XDIOEventNewConnectionCallBackPtr cb);
+    void setNewConnectionCallBack(XDIOEventNewConnectionCallBackPtr &cb);
 
 private:
     // IOEventLoop

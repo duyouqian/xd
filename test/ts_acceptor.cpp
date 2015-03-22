@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     XDIOEventLoop loop;
     XDIpv4Addr addr(7000);
     XDAcceptor accept(&loop, addr, true);
-    XDSharedPtr<NewConnectCallBack> cb(new NewConnectCallBack());
+    XDSharedPtr<XDIOEventNewConnectionCallBack> cb(new NewConnectCallBack());
     accept.setNewConnectionCallBack(cb);
     accept.listen();
     loop.loop();
