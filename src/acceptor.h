@@ -6,6 +6,8 @@
 #include "socket_util.h"
 #include "inetaddr.h"
 #include "callback.h"
+#include "event_loop.h"
+#include "channel.h"
 #include "types.h"
 
 class XDAcceptorHandleRead;
@@ -21,8 +23,6 @@ public:
     void listen();
     
     void setNewConnectionCallBack(XDIOEventNewConnectionCallBackPtr cb);
-
-    XDIOEventLoop* getOwnerLoop() const;
 
 private:
     // IOEventLoop

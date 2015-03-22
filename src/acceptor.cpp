@@ -1,10 +1,11 @@
 #include "acceptor.h"
-#include "logh"
+#include "log.h"
+#include <fcntl.h>
 
 class XDAcceptorHandleRead : public XDIOEventReadCallBack
 {
 public:
-    explicit XDAcceptorHandleRead(XDAccept *accept) : accept_(accept)
+    explicit XDAcceptorHandleRead(XDAcceptor *accept) : accept_(accept)
     {
     }
 
@@ -12,14 +13,14 @@ public:
     {
         accept_->loop_->checkInLoopThread();
         XDIpv4Addr peerAddr;
-        FD connfd = accept_->acceptSocket_->accept(&peerAddr);
+        FD connfd = accept_->acceptorSocket_.accept(&peerAddr);
         if (-1 == connfd) {
             // 失败
             XDLOG_merror("[Acceptor] HandleRead 接受新连接失败");
             if (errno == EMFILE) {
                 XDSocketOpt::close(accept_->idleFD_);
-                accept_->idleFD_ = XDSocketOpt::accept(acceptSocket_.fd(), NULL);
-                XDSOcketOpt::close(accept_->idleFD_);
+                accept_->idleFD_ = XDSocketOpt::accept(accept_->acceptorSocket_.getSocketID(), NULL);
+                XDSocketOpt::close(accept_->idleFD_);
                 accept_->idleFD_ = (::open("/dev/null", O_RDONLY | O_CLOEXEC));
             }
         } else {
@@ -33,7 +34,7 @@ public:
         return true;
     }
 private:
-    XDAccept *accept_;
+    XDAcceptor *accept_;
 };
 
 XDAcceptor::XDAcceptor(XDIOEventLoop *loop,
@@ -41,24 +42,23 @@ XDAcceptor::XDAcceptor(XDIOEventLoop *loop,
                        bool reuseport)
           : loop_(loop)
           , acceptorSocket_(XDSocketOpt::createNonblockingOrDie())
-          , acceptChannel_(loop, acceptorSocket_.getSocketID())
-          , acceptorSocket_()
+          , acceptorChannel_(loop, (FD)acceptorSocket_.getSocketID())
           , listenning_(false)
           , idleFD_(::open("/dev/null", O_RDONLY | O_CLOEXEC))
           , newConnectionCallBack_(NULL)
 {
     check(idleFD_ != -1);
-    acceptSocket_.setReuseAddr(true);
-    acceptSocket_.setReusePort(reuseport);
-    acceptSocket_.bindAddress(&listenAddr);
-    XDSharePtr<XDAcceptHandleRead> handleRead(new XDAcceptHanleRead(this));
-    acceptChannel_.setReadCallBack(handleRead);
+    acceptorSocket_.setReuseAddr(true);
+    acceptorSocket_.setReusePort(reuseport);
+    acceptorSocket_.bindAddress(&listenAddr);
+    XDSharedPtr<XDAcceptorHandleRead> handleRead(new XDAcceptorHandleRead(this));
+    acceptorChannel_.setReadCallBack(handleRead);
 }
 
 XDAcceptor::~XDAcceptor()
 {
-    acceptChannel_.disableAll();
-    acceptChannel_.remove();
+    acceptorChannel_.disableAll();
+    acceptorChannel_.remove();
     XDSocketOpt::close(idleFD_);
 }
 
@@ -75,7 +75,7 @@ void XDAcceptor::listen()
     acceptorChannel_.setEvent(XDIOEventType_READ, true);
 }
 
-void XDAcceptor::setNewConnectionCallBack(XDIOEventNewConnectionBackPtr cb)
+void XDAcceptor::setNewConnectionCallBack(XDIOEventNewConnectionCallBackPtr cb)
 {
     newConnectionCallBack_ = cb;
 }
