@@ -9,7 +9,7 @@
 #include <sys/eventfd.h>
 
 __thread XDIOEventLoop* loopInThisThread = NULL;
-const int32 POLLTIMEOUTMS = 1000 * 10;
+const int32 POLLTIMEOUTMS = 1000;
 
 FD createEventfd()
 {

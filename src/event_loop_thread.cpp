@@ -1,8 +1,7 @@
 #include "event_loop_thread.h"
 #include "log.h"
-#include <string>
 
-XDIOEventLoopThread::XDIOEventLoopThread(XDIOEventLoopThreadInitCallBackPtr &cb,
+XDIOEventLoopThread::XDIOEventLoopThread(const XDIOEventLoopThreadInitCallBackPtr &cb,
                                          const char *name)
                                          : thread_(NULL)
                                          , name_(name)

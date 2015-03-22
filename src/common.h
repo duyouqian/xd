@@ -20,6 +20,7 @@
 #include "event.h"
 #include "event_loop.h"
 #include "event_loop_thread.h"
+#include "event_loop_thread_pool.h"
 #include "poller.h"
 #include "socket.h"
 #include "inetaddr.h"

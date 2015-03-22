@@ -4,11 +4,12 @@
 #include "thread.h"
 #include "event_loop.h"
 #include "types.h"
+#include <string>
 
 class XDIOEventLoopThread : public XDIRunnable
 {
 public:
-    XDIOEventLoopThread(XDIOEventLoopThreadInitCallBackPtr &cb,
+    XDIOEventLoopThread(const XDIOEventLoopThreadInitCallBackPtr &cb,
                         const char *name);
     ~XDIOEventLoopThread();
     XDIOEventLoop* startLoop();
