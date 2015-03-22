@@ -19,6 +19,7 @@
 #include "callback.h"
 #include "event.h"
 #include "event_loop.h"
+#include "event_loop_thread.h"
 #include "poller.h"
 #include "socket.h"
 #include "inetaddr.h"

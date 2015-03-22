@@ -8,6 +8,7 @@ SET(BASE_SOURCE mutex.cpp
                 log.cpp
                 shareable.cpp
                 event_loop.cpp
+                event_loop_thread.cpp
                 poller.cpp
                 channel.cpp
                 acceptor.cpp)

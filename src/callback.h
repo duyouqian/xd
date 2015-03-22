@@ -6,6 +6,8 @@
 #include "inetaddr.h"
 #include "types.h"
 
+class XDIOEventLoop;
+
 class XDFunction : public XDShareable
 {
 public:
@@ -33,8 +35,16 @@ public:
     virtual bool exec(uint64 timestamp) = 0;
 };
 
+// IOEventLoop初始化回调
+class XDIOEventLoopThreadInitCallBack : public XDShareable
+{
+public:
+    virtual bool exec(XDIOEventLoop *loop) = 0;
+};
+
 typedef XDSharedPtr<XDIOEventCallBack> XDIOEventCallBackPtr;
 typedef XDSharedPtr<XDIOEventNewConnectionCallBack> XDIOEventNewConnectionCallBackPtr;
 typedef XDSharedPtr<XDIOEventReadCallBack> XDIOEventReadCallBackPtr;
+typedef XDSharedPtr<XDIOEventLoopThreadInitCallBack> XDIOEventLoopThreadInitCallBackPtr;
 
 #endif // end xd_callback_h
