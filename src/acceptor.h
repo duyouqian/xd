@@ -11,10 +11,13 @@
 #include "types.h"
 
 class XDAcceptorHandleRead;
+class XDTcpServer;
+class XDAcceptListener;
 
 class XDAcceptor : public XDShareable
 {
     friend class XDAcceptorHandleRead;
+    friend class XDTcpServer;
 public:
     XDAcceptor(XDIOEventLoop *loop, const XDIpv4Addr &listenAddr, bool reuseport);
     ~XDAcceptor();
@@ -37,6 +40,8 @@ private:
     FD idleFD_;
     // 新连接回调
     XDIOEventCallBackPtr newConnectionCallBack_;
+    // 用于其他线程监听回调
+    XDFunctionPtr listenCallBack_;
 };
 
 #endif // end xd_acceptor_h

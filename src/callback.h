@@ -3,6 +3,8 @@
 
 #include "shareable.h"
 #include "shared_pointer.h"
+#include "tcp_connection.h"
+#include "buffer.h"
 #include "inetaddr.h"
 #include "types.h"
 
@@ -56,6 +58,17 @@ public:
     virtual bool closeCallBack() { return true; }
     // 错误回调
     virtual bool errorCallBack() { return true; }
+    // 连接回调
+    virtual bool connectionCallBack(const XDTcpConnectionPtr &conn) { return true; }
+    // 关闭回调
+    virtual bool closeCallBack(const XDTcpConnectionPtr &conn) { return true; }
+    // 写完成回调
+    virtual bool writeCompleteCallBack(const XDTcpConnectionPtr &conn) { return true; }
+    // 高水位标回调
+    virtual bool hightWaterMarkCallBack(const XDTcpConnectionPtr &conn) { return true; }
+    // 消息回调
+    virtual bool messageCallBack(const XDTcpConnectionPtr &conn, XDBuffer *buff, uint64 timestamp) { return true; }
+
 };
 
 typedef XDSharedPtr<XDFunction> XDFunctionPtr;

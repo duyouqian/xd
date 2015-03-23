@@ -155,7 +155,9 @@ void XDIOEventLoop::wakeup()
 void XDIOEventLoop::runInLoop(const XDFunctionPtr &cb)
 {
     if (isInLoopThread()) {
-        cb->exec();
+        if (cb.isValid()) {
+            cb->exec();
+        }
     } else {
         queueInLoop(cb);
     }
@@ -191,7 +193,9 @@ void XDIOEventLoop::doPendingFunctors()
         temp.swap(pendingFunctors_);
     }
     for (int32 i = 0; i < temp.size(); ++i) {
-        temp[i]->exec();
+        if (temp[i].isValid()) {
+            temp[i]->exec();
+        }
     }
     callingPendingFunctors_ = false;
 }

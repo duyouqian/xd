@@ -2,6 +2,21 @@
 #include "log.h"
 #include <fcntl.h>
 
+class XDAcceptListener : public XDFunction
+{
+public:
+    explicit XDAcceptListener(XDAcceptor *accpet) : accept_(accept)
+    {
+    }
+    bool ecec()
+    {
+        accept_->listen();
+        return true;
+    }
+private:
+    XDAcceptor *accept_;
+};
+
 class XDAcceptorHandleRead : public XDIOEventCallBack
 {
 public:
@@ -52,6 +67,7 @@ XDAcceptor::XDAcceptor(XDIOEventLoop *loop,
     acceptorSocket_.setReusePort(reuseport);
     acceptorSocket_.bindAddress(&listenAddr);
     XDIOEventCallBackPtr handleRead(new XDAcceptorHandleRead(this));
+    listenCallBack_ = XDFunctionPtr(new XDAcceptListener(this));
     acceptorChannel_.setIOEventCallBack(handleRead);
 }
 
