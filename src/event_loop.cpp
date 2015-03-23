@@ -9,7 +9,7 @@
 #include <sys/eventfd.h>
 
 __thread XDIOEventLoop* loopInThisThread = NULL;
-const int32 POLLTIMEOUTMS = 1000;
+const int32 POLLTIMEOUTMS = 1000 * 10;
 
 FD createEventfd()
 {
@@ -32,10 +32,11 @@ public:
     }
     virtual bool exec(uint64 timestamp)
     {
+        XDLOG_minfo("[WakeupHandleRead] 有线程唤醒IOEventLoop线程");
         uint64 one = 1;
         int32 n = XDSocketOpt::read(fd_, &one, sizeof(one));
         if (n != sizeof(one)) {
-            XDLOG_merror("[WakeupHandRead] reads:%d bytes instead of 8", n);
+            XDLOG_merror("[WakeupHandleRead] reads:%d bytes instead of 8", n);
         }
     }
 private:
@@ -204,4 +205,5 @@ void XDIOEventLoop::checkInLoopThread()
 void XDIOEventLoop::abortNotInLoopThread()
 {
     XDLOG_mfatal("IOEventLoop::abortNotInLoopThread - IOEventLoop 已经创建 线程ID=%u, 当前线程ID=%u", threadID_, XDThread::getCurrentThreadID());
+    abort();
 }

@@ -5,6 +5,7 @@
 #include "timer.h"
 #include "socket_util.h"
 
+#include <sstream>
 #include <sys/epoll.h>
 
 const uint32 INITEVENTLISTSIZE = 16;
@@ -162,7 +163,7 @@ void XDEPoller::update(int32 oper, XDChannel *channel)
     ev.events = evt;
     ev.data.ptr = channel;
     FD fd = channel->fd();
-    XDLOG_minfo("[EPoll] [update] epoll_ctl op=%s fd=%d event=%s", operToString(oper), fd, channel->reventsToString().c_str());
+    XDLOG_minfo("[EPoll] [update] epoll_ctl op=%s fd=%d event=%s", operToString(oper), fd, eventToString(evt).c_str());
     if (-1 == ::epoll_ctl(epollfd_, oper, fd, &ev)) {
         // 注册epoll失败
         XDLOG_merror("[EPoll] [update] epoll_ctl op=%s fd=%d 注册失败", operToString(oper), fd);
@@ -184,4 +185,20 @@ const char* XDEPoller::operToString(int32 op)
             check(false && "ERROR op");
             return "Unknown Operation";
     }
+}
+
+std::string  XDPoller::eventToString(int32 evt)
+{
+    std::ostringstream oss;
+    oss << "epoll event:";
+    if (evt & EPOLLIN) {
+        oss << "EPOLLIN | ";
+    }
+    if (evt & EPOLLPRI) {
+        oss << "EPOLLPRI | ";
+    }
+    if (evt & EPOLLOUT) {
+        oss << "EPOLLOUT";
+    }
+    return oss.str().c_str();
 }

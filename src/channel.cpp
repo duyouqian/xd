@@ -168,13 +168,20 @@ std::string XDChannel::eventsToString(int32 fd, int32 ev)
 {
     std::ostringstream oss;
     oss << "fd=" << fd << ": ";
-    if (ev & XDIOEventType_READ)
-        oss << "READ ";
-    if (ev & XDIOEventType_WRITE)
-        oss << "WRITE";
-    if (ev & XDIOEventType_ERROR)
-        oss << "ERROR";
-    if (ev & XDIOEventType_CLOSE)
+    if (ev & XDIOEventType_NONE) {
+        oss << "NONE  | ";
+    }
+    if (ev & XDIOEventType_READ) {
+        oss << "READ  | ";
+    }
+    if (ev & XDIOEventType_WRITE) {
+        oss << "WRITE | ";
+    }
+    if (ev & XDIOEventType_ERROR) {
+        oss << "ERROR | ";
+    }
+    if (ev & XDIOEventType_CLOSE) {
         oss << "CLOSE";
+    }
     return oss.str().c_str();
 }

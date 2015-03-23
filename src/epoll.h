@@ -2,6 +2,7 @@
 #define XD_EPOLL_H
 
 #include "base_poll.h"
+#include <string>
 
 class XDIOEventLoop;
 class XDEPoller : public XDBasePoller
@@ -19,6 +20,7 @@ private:
                             std::vector<XDChannel*> *activeChannels);
     void update(int32 oper, XDChannel *channel);
     static const char* operToString(int32 op);
+    static std::string  eventToString(int32 evt);
 private:
     int epollfd_;
     std::vector<struct epoll_event> events_;

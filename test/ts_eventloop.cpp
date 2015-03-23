@@ -26,6 +26,6 @@ int main(int argc, char **argv)
     XDIThread *thread = XDThread::create(&tr1, "Thread1Run");
     loop.loop();
     thread->waitForComplateion();
-    //XDLOG_close();
+    XDLOG_close();
     return 0;
 }
