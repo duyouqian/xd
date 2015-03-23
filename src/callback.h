@@ -3,6 +3,7 @@
 
 #include "shareable.h"
 #include "shared_pointer.h"
+#include "inetaddr.h"
 #include "types.h"
 
 class XDFunction : public XDShareable
@@ -19,10 +20,10 @@ public:
 };
 
 // 新连接回调
-class XDIOEventConnectionCallBack : public XDShareable
+class XDIOEventNewConnectionCallBack : public XDShareable
 {
 public:
-    virtual bool exec(/*const XDTcpConnectionPtr &conn*/) = 0;
+    virtual bool exec(FD fd, const XDIpv4Addr &addr) = 0;
 };
 
 // 读回调
@@ -33,7 +34,7 @@ public:
 };
 
 typedef XDSharedPtr<XDIOEventCallBack> XDIOEventCallBackPtr;
-typedef XDSharedPtr<XDIOEventConnectionCallBack> XDIOEventConnectionCallBackPtr;
+typedef XDSharedPtr<XDIOEventNewConnectionCallBack> XDIOEventNewConnectionCallBackPtr;
 typedef XDSharedPtr<XDIOEventReadCallBack> XDIOEventReadCallBackPtr;
 
 #endif // end xd_callback_h

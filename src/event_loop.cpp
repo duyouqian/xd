@@ -53,6 +53,7 @@ XDIOEventLoop::XDIOEventLoop()
              , poller_(new XDPoller(this))
              , wakeupFd_(createEventfd())
              , wakeupChannel_(new XDChannel(this, wakeupFd_))
+             , context_(NULL)
              , looping_(false)
              , eventHandleing_(false)
              , callingPendingFunctors_(false)
@@ -200,6 +201,16 @@ void XDIOEventLoop::checkInLoopThread()
     if (!isInLoopThread()) {
         abortNotInLoopThread();
     }
+}
+
+void XDIOEventLoop::setContext(void *value)
+{
+    context_ = value;
+}
+
+void* XDIOEventLoop::getContext()
+{
+    return context_;
 }
 
 void XDIOEventLoop::abortNotInLoopThread()

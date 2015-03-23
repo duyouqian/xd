@@ -25,5 +25,6 @@
 #include "reference_count.h"
 #include "base_object.h"
 #include "channel.h"
+#include "acceptor.h"
 
 #endif // end xd_common_h

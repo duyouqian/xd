@@ -34,6 +34,10 @@ public:
     // 唤醒
     void wakeup();
     
+    // 获取和设置context
+    void setContext(void *value);
+    void *getContext();
+    
     // 来自相同线程中运行
     void runInLoop(XDSharedPtr<XDFunction> cb);
     // 来自其他线程
@@ -60,6 +64,8 @@ private:
     FD wakeupFd_;
     // 唤醒通道
     XDSharedPtr<XDChannel> wakeupChannel_;
+    // 存储内容
+    void *context_;
     // 在主循环中
     bool looping_;
     // 处理事件中

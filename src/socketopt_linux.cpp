@@ -70,8 +70,13 @@ int32 XDSocketOpt::listen(SOCKET fd)
 
 SOCKET XDSocketOpt::accept(SOCKET fd, sockaddr_in *addr)
 {
-    socklen_t len = static_cast<socklen_t>(sizeof(sockaddr_in));
-    SOCKET connfd = ::accept(fd, (sockaddr *)addr, &len);
+    SOCKET connfd;
+    if (NULL == addr) {
+        connfd = ::accept(fd, NULL, NULL);
+    } else {
+        socklen_t len = static_cast<socklen_t>(sizeof(sockaddr_in));
+        connfd = ::accept(fd, (sockaddr *)addr, &len);
+    }
     if (-1 == connfd) {
         XDLOG_merror("[XDSocketOpt] 接收fd:%d 失败 err:%d, %s", fd, errno, strerror(errno));
         int32 connError = errno;
