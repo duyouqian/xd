@@ -79,6 +79,8 @@ private:
     void operator& () const;
 } nullptr_t = {};
 
+struct XDNULLTag {};
+
 #ifndef NULL
     #define NULL nullptr_t
 #endif
