@@ -22,7 +22,7 @@ public:
     bool listenning() const;
     void listen();
     
-    void setNewConnectionCallBack(XDIOEventNewConnectionCallBackPtr &cb);
+    void setNewConnectionCallBack(XDIOEventCallBackPtr &cb);
 
 private:
     // IOEventLoop
@@ -36,7 +36,7 @@ private:
     // 空闲FD
     FD idleFD_;
     // 新连接回调
-    XDIOEventNewConnectionCallBackPtr newConnectionCallBack_;
+    XDIOEventCallBackPtr newConnectionCallBack_;
 };
 
 #endif // end xd_acceptor_h

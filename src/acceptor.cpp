@@ -2,14 +2,14 @@
 #include "log.h"
 #include <fcntl.h>
 
-class XDAcceptorHandleRead : public XDIOEventReadCallBack
+class XDAcceptorHandleRead : public XDIOEventCallBack
 {
 public:
     explicit XDAcceptorHandleRead(XDAcceptor *accept) : accept_(accept)
     {
     }
 
-    bool exec(uint64 timestamp)
+    bool readCallBack(uint64 timestamp)
     {
         accept_->loop_->checkInLoopThread();
         XDIpv4Addr peerAddr;
@@ -26,7 +26,7 @@ public:
         } else {
             // 成功
             if (accept_->newConnectionCallBack_.isValid()) {
-                accept_->newConnectionCallBack_->exec(connfd, peerAddr);
+                accept_->newConnectionCallBack_->newConnectionCallBack(connfd, peerAddr);
             } else {
                 XDSocketOpt::close(connfd);
             }
@@ -51,8 +51,8 @@ XDAcceptor::XDAcceptor(XDIOEventLoop *loop,
     acceptorSocket_.setReuseAddr(true);
     acceptorSocket_.setReusePort(reuseport);
     acceptorSocket_.bindAddress(&listenAddr);
-    XDSharedPtr<XDAcceptorHandleRead> handleRead(new XDAcceptorHandleRead(this));
-    acceptorChannel_.setReadCallBack(handleRead);
+    XDIOEventCallBackPtr handleRead(new XDAcceptorHandleRead(this));
+    acceptorChannel_.setIOEventCallBack(handleRead);
 }
 
 XDAcceptor::~XDAcceptor()
@@ -75,7 +75,7 @@ void XDAcceptor::listen()
     acceptorChannel_.setEvent(XDIOEventType_READ, true);
 }
 
-void XDAcceptor::setNewConnectionCallBack(XDIOEventNewConnectionCallBackPtr &cb)
+void XDAcceptor::setNewConnectionCallBack(XDIOEventCallBackPtr &cb)
 {
     newConnectionCallBack_ = cb;
 }
