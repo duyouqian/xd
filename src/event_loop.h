@@ -39,9 +39,9 @@ public:
     void *getContext();
     
     // 来自相同线程中运行
-    void runInLoop(XDSharedPtr<XDFunction> cb);
+    void runInLoop(const XDFunctionPtr &cb);
     // 来自其他线程
-    void queueInLoop(XDSharedPtr<XDFunction> cb);
+    void queueInLoop(const XDFunctionPtr &cb);
     // 判断是否在事件循环线程
     FORCEINLINE bool isInLoopThread()
     {
@@ -82,7 +82,7 @@ private:
     // mutex
     XDMutex mutex_;
     // 存储来自其他线程的处理器
-    std::vector<XDSharedPtr<XDFunction> > pendingFunctors_;
+    std::vector<XDFunctionPtr> pendingFunctors_;
 };
 
 #endif // end xd_event_loop_h

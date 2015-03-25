@@ -21,7 +21,7 @@ FD createEventfd()
     return fd;
 }
 
-class WakeupHandleRead : public XDIOEventReadCallBack
+class WakeupHandleRead : public XDIOEventCallBack
 {
 public:
     explicit WakeupHandleRead(FD fd) : fd_(fd)
@@ -30,7 +30,7 @@ public:
     virtual ~WakeupHandleRead()
     {
     }
-    virtual bool exec(uint64 timestamp)
+    virtual bool readCallBack(uint64 timestamp)
     {
         XDLOG_minfo("[WakeupHandleRead] 有线程唤醒IOEventLoop线程");
         uint64 one = 1;
@@ -65,8 +65,8 @@ XDIOEventLoop::XDIOEventLoop()
     } else {
         loopInThisThread = this;
     }
-    XDSharedPtr<XDIOEventReadCallBack> wakeupHandRead(new WakeupHandleRead(wakeupFd_));
-    wakeupChannel_->setReadCallBack(wakeupHandRead);
+    XDIOEventCallBackPtr wakeupHandRead(new WakeupHandleRead(wakeupFd_));
+    wakeupChannel_->setIOEventCallBack(wakeupHandRead);
     wakeupChannel_->setEvent(XDIOEventType_READ, true);
 }
 
@@ -152,7 +152,7 @@ void XDIOEventLoop::wakeup()
     }
 }
 
-void XDIOEventLoop::runInLoop(XDSharedPtr<XDFunction> cb)
+void XDIOEventLoop::runInLoop(const XDFunctionPtr &cb)
 {
     if (isInLoopThread()) {
         cb->exec();
@@ -161,7 +161,7 @@ void XDIOEventLoop::runInLoop(XDSharedPtr<XDFunction> cb)
     }
 }
 
-void XDIOEventLoop::queueInLoop(XDSharedPtr<XDFunction> cb)
+void XDIOEventLoop::queueInLoop(const XDFunctionPtr &cb)
 {
     {
         XDGuardMutex lock(&mutex_);
@@ -184,7 +184,7 @@ void XDIOEventLoop::printActiveChannels()
 
 void XDIOEventLoop::doPendingFunctors()
 {
-    std::vector<XDSharedPtr<XDFunction> > temp;
+    std::vector<XDFunctionPtr> temp;
     callingPendingFunctors_ = true;
     {
         XDGuardMutex lock(&mutex_);

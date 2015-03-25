@@ -48,25 +48,30 @@ void XDChannel::setRevents(int32 value)
     revent_ = value;
 }
 
-void XDChannel::setReadCallBack(const XDIOEventReadCallBackPtr &cb)
+void XDChannel::setIOEventCallBack(const XDIOEventCallBackPtr &cb)
 {
-    readCallBack_ = cb;
+    ioeventCallBack_ = cb;
 }
 
-void XDChannel::setWriteCallBack(const XDIOEventCallBackPtr &cb)
-{
-    writeCallBack_ = cb;
-}
-
-void XDChannel::setCloseCallBack(const XDIOEventCallBackPtr &cb)
-{
-    closeCallBack_ = cb;
-}
-
-void XDChannel::setErrorCallBack(const XDIOEventCallBackPtr &cb)
-{
-    errorCallBack_ = cb;
-}
+//void XDChannel::setReadCallBack(const XDIOEventReadCallBackPtr &cb)
+//{
+//    readCallBack_ = cb;
+//}
+//
+//void XDChannel::setWriteCallBack(const XDIOEventCallBackPtr &cb)
+//{
+//    writeCallBack_ = cb;
+//}
+//
+//void XDChannel::setCloseCallBack(const XDIOEventCallBackPtr &cb)
+//{
+//    closeCallBack_ = cb;
+//}
+//
+//void XDChannel::setErrorCallBack(const XDIOEventCallBackPtr &cb)
+//{
+//    errorCallBack_ = cb;
+//}
 
 void XDChannel::setEvent(uint32 type, bool on)
 {
@@ -117,21 +122,21 @@ void XDChannel::disableAll()
 void XDChannel::handleEvent(uint64 timestamp)
 {
     eventHandleing_ = true;
-    if ((revent_& XDIOEventType_READ) && readCallBack_.isValid()) {
+    if ((revent_& XDIOEventType_READ) && ioeventCallBack_.isValid()) {
         // 读事件
-        readCallBack_->exec(timestamp);
+        ioeventCallBack_->readCallBack(timestamp);
     }
-    if ((revent_ & XDIOEventType_WRITE) && writeCallBack_.isValid()) {
+    if ((revent_ & XDIOEventType_WRITE) && ioeventCallBack_.isValid()) {
         // 写事件
-        writeCallBack_->exec();
+        ioeventCallBack_->writeCallBack();
     }
-    if ((revent_& XDIOEventType_ERROR) && errorCallBack_.isValid()) {
+    if ((revent_& XDIOEventType_ERROR) && ioeventCallBack_.isValid()) {
         // 错误事件
-        errorCallBack_->exec();
+        ioeventCallBack_->errorCallBack();
     }
-    if ((revent_& XDIOEventType_CLOSE) && closeCallBack_.isValid()) {
+    if ((revent_& XDIOEventType_CLOSE) && ioeventCallBack_.isValid()) {
         // 关闭事件
-        closeCallBack_->exec();
+        ioeventCallBack_->closeCallBack();
     }
     eventHandleing_ = false;
 }
