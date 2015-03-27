@@ -9,7 +9,7 @@
 class XDIOEventLoopThread : public XDIRunnable
 {
 public:
-    XDIOEventLoopThread(const XDIOEventLoopThreadInitCallBackPtr &cb,
+    XDIOEventLoopThread(const XDIOEventLoopThreadInitCallBack &cb,
                         const char *name);
     ~XDIOEventLoopThread();
     XDIOEventLoop* startLoop();
@@ -23,7 +23,7 @@ private:
     std::string name_;
     XDIOEventLoop *loop_;
     bool isExiting_;
-    XDIOEventLoopThreadInitCallBackPtr initThreadCallBack_;
+    XDIOEventLoopThreadInitCallBack initThreadCallBack_;
 };
 
 #endif // end xd_event_loop_thread_h

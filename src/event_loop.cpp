@@ -163,7 +163,7 @@ void XDIOEventLoop::runInLoop(const XDFunctionPtr &cb)
     }
 }
 
-void XDIOEventLoop::queueInLoop(const XDFunctionPtr &cb)
+void XDIOEventLoop::queueInLoop(const XDIOEventCallBack &cb)
 {
     {
         XDGuardMutex lock(&mutex_);
@@ -186,16 +186,14 @@ void XDIOEventLoop::printActiveChannels()
 
 void XDIOEventLoop::doPendingFunctors()
 {
-    std::vector<XDFunctionPtr> temp;
+    std::vector<XDIOEventCallBack> temp;
     callingPendingFunctors_ = true;
     {
         XDGuardMutex lock(&mutex_);
         temp.swap(pendingFunctors_);
     }
     for (int32 i = 0; i < temp.size(); ++i) {
-        if (temp[i].isValid()) {
-            temp[i]->exec();
-        }
+        temp[i]();
     }
     callingPendingFunctors_ = false;
 }

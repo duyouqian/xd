@@ -48,30 +48,25 @@ void XDChannel::setRevents(int32 value)
     revent_ = value;
 }
 
-void XDChannel::setIOEventCallBack(const XDIOEventCallBackPtr &cb)
+void XDChannel::setReadCallBack(const XDIOEventReadCallBack &cb)
 {
-    ioeventCallBack_ = cb;
+    readCallBack_ = cb;
 }
 
-//void XDChannel::setReadCallBack(const XDIOEventReadCallBackPtr &cb)
-//{
-//    readCallBack_ = cb;
-//}
-//
-//void XDChannel::setWriteCallBack(const XDIOEventCallBackPtr &cb)
-//{
-//    writeCallBack_ = cb;
-//}
-//
-//void XDChannel::setCloseCallBack(const XDIOEventCallBackPtr &cb)
-//{
-//    closeCallBack_ = cb;
-//}
-//
-//void XDChannel::setErrorCallBack(const XDIOEventCallBackPtr &cb)
-//{
-//    errorCallBack_ = cb;
-//}
+void XDChannel::setWriteCallBack(const XDIOEventCallBack &cb)
+{
+    writeCallBack_ = cb;
+}
+
+void XDChannel::setCloseCallBack(const XDIOEventCallBack &cb)
+{
+    closeCallBack_ = cb;
+}
+
+void XDChannel::setErrorCallBack(const XDIOEventCallBack &cb)
+{
+    errorCallBack_ = cb;
+}
 
 void XDChannel::setEvent(uint32 type, bool on)
 {
@@ -122,21 +117,21 @@ void XDChannel::disableAll()
 void XDChannel::handleEvent(uint64 timestamp)
 {
     eventHandleing_ = true;
-    if ((revent_& XDIOEventType_READ) && ioeventCallBack_.isValid()) {
+    if ((revent_& XDIOEventType_READ) && readCallBack_) {
         // 读事件
-        ioeventCallBack_->readCallBack(timestamp);
+        readCallBack_(timestamp);
     }
-    if ((revent_ & XDIOEventType_WRITE) && ioeventCallBack_.isValid()) {
+    if ((revent_ & XDIOEventType_WRITE) && writeCallBack_) {
         // 写事件
-        ioeventCallBack_->writeCallBack();
+        writeCallBack_();
     }
-    if ((revent_& XDIOEventType_ERROR) && ioeventCallBack_.isValid()) {
+    if ((revent_& XDIOEventType_ERROR) && errorCallBack_) {
         // 错误事件
-        ioeventCallBack_->errorCallBack();
+        errorCallBack_();
     }
-    if ((revent_& XDIOEventType_CLOSE) && ioeventCallBack_.isValid()) {
+    if ((revent_& XDIOEventType_CLOSE) && closeCallBack_) {
         // 关闭事件
-        ioeventCallBack_->closeCallBack();
+        closeCallBack_();
     }
     eventHandleing_ = false;
 }

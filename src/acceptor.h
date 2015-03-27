@@ -12,7 +12,6 @@
 
 class XDAcceptorHandleRead;
 class XDTcpServer;
-class XDAcceptListener;
 
 class XDAcceptor : public XDShareable
 {
@@ -25,7 +24,10 @@ public:
     bool listenning() const;
     void listen();
     
-    void setNewConnectionCallBack(XDIOEventCallBackPtr &cb);
+    void setNewConnectionCallBack(XDIOEventNewConnectionCallBack &cb);
+    
+private:
+    void handRead(uint64 timestamp);
 
 private:
     // IOEventLoop
@@ -39,9 +41,7 @@ private:
     // 空闲FD
     FD idleFD_;
     // 新连接回调
-    XDIOEventCallBackPtr newConnectionCallBack_;
-    // 用于其他线程监听回调
-    XDFunctionPtr listenCallBack_;
+    XDIOEventNewConnectionCallBack newConnectionCallBack_;
 };
 
 #endif // end xd_acceptor_h

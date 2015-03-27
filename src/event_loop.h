@@ -39,9 +39,9 @@ public:
     void *getContext();
     
     // 来自相同线程中运行
-    void runInLoop(const XDFunctionPtr &cb);
+    void runInLoop(const XDIOEventCallBack &cb);
     // 来自其他线程
-    void queueInLoop(const XDFunctionPtr &cb);
+    void queueInLoop(const XDIOEventCallBack &cb);
     // 判断是否在事件循环线程
     FORCEINLINE bool isInLoopThread()
     {
@@ -82,7 +82,7 @@ private:
     // mutex
     XDMutex mutex_;
     // 存储来自其他线程的处理器
-    std::vector<XDFunctionPtr> pendingFunctors_;
+    std::vector<XDIOEventCallBack> pendingFunctors_;
 };
 
 #endif // end xd_event_loop_h

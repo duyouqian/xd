@@ -16,7 +16,7 @@ public:
                             const char *name);
     ~XDIOEventLoopThreadPool();
     void setNumThread(uint32 num);
-    void start(const XDIOEventLoopThreadInitCallBackPtr &cb);
+    void start(const XDIOEventLoopThreadInitCallBack &cb);
     XDIOEventLoop* getNextLoop();
     XDIOEventLoop* getLoopForHash(int32 hash);
     std::vector<XDIOEventLoop*> getAllLoops();

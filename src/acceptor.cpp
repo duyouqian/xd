@@ -1,56 +1,7 @@
 #include "acceptor.h"
 #include "log.h"
 #include <fcntl.h>
-
-class XDAcceptListener : public XDFunction
-{
-public:
-    explicit XDAcceptListener(XDAcceptor *accpet) : accept_(accept)
-    {
-    }
-    bool ecec()
-    {
-        accept_->listen();
-        return true;
-    }
-private:
-    XDAcceptor *accept_;
-};
-
-class XDAcceptorHandleRead : public XDIOEventCallBack
-{
-public:
-    explicit XDAcceptorHandleRead(XDAcceptor *accept) : accept_(accept)
-    {
-    }
-
-    bool readCallBack(uint64 timestamp)
-    {
-        accept_->loop_->checkInLoopThread();
-        XDIpv4Addr peerAddr;
-        FD connfd = accept_->acceptorSocket_.accept(&peerAddr);
-        if (-1 == connfd) {
-            // 失败
-            XDLOG_merror("[Acceptor] HandleRead 接受新连接失败");
-            if (errno == EMFILE) {
-                XDSocketOpt::close(accept_->idleFD_);
-                accept_->idleFD_ = XDSocketOpt::accept(accept_->acceptorSocket_.getSocketID(), NULL);
-                XDSocketOpt::close(accept_->idleFD_);
-                accept_->idleFD_ = (::open("/dev/null", O_RDONLY | O_CLOEXEC));
-            }
-        } else {
-            // 成功
-            if (accept_->newConnectionCallBack_.isValid()) {
-                accept_->newConnectionCallBack_->newConnectionCallBack(connfd, peerAddr);
-            } else {
-                XDSocketOpt::close(connfd);
-            }
-        }
-        return true;
-    }
-private:
-    XDAcceptor *accept_;
-};
+#include <functional>
 
 XDAcceptor::XDAcceptor(XDIOEventLoop *loop,
                        const XDIpv4Addr &listenAddr,
@@ -66,9 +17,7 @@ XDAcceptor::XDAcceptor(XDIOEventLoop *loop,
     acceptorSocket_.setReuseAddr(true);
     acceptorSocket_.setReusePort(reuseport);
     acceptorSocket_.bindAddress(&listenAddr);
-    XDIOEventCallBackPtr handleRead(new XDAcceptorHandleRead(this));
-    listenCallBack_ = XDFunctionPtr(new XDAcceptListener(this));
-    acceptorChannel_.setIOEventCallBack(handleRead);
+    acceptorChannel_.setReadCallBack(std::bind(&XDAcceptor::handRead, this));
 }
 
 XDAcceptor::~XDAcceptor()
@@ -91,7 +40,31 @@ void XDAcceptor::listen()
     acceptorChannel_.setEvent(XDIOEventType_READ, true);
 }
 
-void XDAcceptor::setNewConnectionCallBack(XDIOEventCallBackPtr &cb)
+void XDAcceptor::setNewConnectionCallBack(XDIOEventNewConnectionCallBack &cb)
 {
     newConnectionCallBack_ = cb;
+}
+
+void XDAcceptor::handRead(uint64 timestamp)
+{
+    loop_->checkInLoopThread();
+    XDIpv4Addr peerAddr;
+    FD connfd = acceptorSocket_.accept(&peerAddr);
+    if (-1 == connfd) {
+        // 失败
+        XDLOG_merror("[Acceptor] HandleRead 接受新连接失败");
+        if (errno == EMFILE) {
+            XDSocketOpt::close(idleFD_);
+            idleFD_ = XDSocketOpt::accept(acceptorSocket_.getSocketID(), NULL);
+            XDSocketOpt::close(idleFD_);
+            idleFD_ = (::open("/dev/null", O_RDONLY | O_CLOEXEC));
+        }
+    } else {
+        // 成功
+        if (newConnectionCallBack_) {
+            newConnectionCallBack_(connfd, peerAddr);
+        } else {
+            XDSocketOpt::close(connfd);
+        }
+    }
 }

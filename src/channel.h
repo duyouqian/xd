@@ -18,11 +18,10 @@ public:
     ~XDChannel();
 
     // 设置IO 读写关闭错误回调处理
-    void setIOEventCallBack(const XDIOEventCallBackPtr &cb);
-    //void setReadCallBack(const XDIOEventReadCallBackPtr &cb);
-    //void setWriteCallBack(const XDIOEventCallBackPtr &cb);
-    //void setCloseCallBack(const XDIOEventCallBackPtr &cb);
-    //void setErrorCallBack(const XDIOEventCallBackPtr &cb);
+    void setReadCallBack(const XDIOEventReadCallBack &cb);
+    void setWriteCallBack(const XDIOEventCallBack &cb);
+    void setCloseCallBack(const XDIOEventCallBack &cb);
+    void setErrorCallBack(const XDIOEventCallBack &cb);
 
     // 设置 读写关闭错误事件
     void setEvent(uint32 type, bool on);
@@ -63,11 +62,10 @@ private:
     bool addToLoop_;
     bool eventHandleing_;
     // 回调接口
-    XDIOEventCallBackPtr ioeventCallBack_;
-//    XDIOEventReadCallBackPtr readCallBack_;
-//    XDIOEventCallBackPtr writeCallBack_;
-//    XDIOEventCallBackPtr closeCallBack_;
-//    XDIOEventCallBackPtr errorCallBack_;
+    XDIOEventReadCallBack readCallBack_;
+    XDIOEventCallBack writeCallBack_;
+    XDIOEventCallBack closeCallBack_;
+    XDIOEventCallBack errorCallBack_;
 };
 
 #endif // end xd_channel_h

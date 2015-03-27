@@ -1,7 +1,7 @@
 #include "event_loop_thread.h"
 #include "log.h"
 
-XDIOEventLoopThread::XDIOEventLoopThread(const XDIOEventLoopThreadInitCallBackPtr &cb,
+XDIOEventLoopThread::XDIOEventLoopThread(const XDIOEventLoopThreadInitCallBack &cb,
                                          const char *name)
                                          : thread_(NULL)
                                          , name_(name)
@@ -41,8 +41,8 @@ uint32 XDIOEventLoopThread::run()
 {
     check(loop_);
     XDLOG_mdebug("[IOEventLoopThread] 运行");
-    if (initThreadCallBack_.isValid()) {
-        initThreadCallBack_->exec(loop_);
+    if (initThreadCallBack_) {
+        initThreadCallBack_(loop_);
     }
     loop_->loop();
     delete loop_;

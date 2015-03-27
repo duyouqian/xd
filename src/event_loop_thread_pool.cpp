@@ -20,7 +20,7 @@ void XDIOEventLoopThreadPool::setNumThread(uint32 num)
     numThread_ = num;
 }
 
-void XDIOEventLoopThreadPool::start(const XDIOEventLoopThreadInitCallBackPtr &cb)
+void XDIOEventLoopThreadPool::start(const XDIOEventLoopThreadInitCallBack &cb)
 {
     check(!started_);
     baseLoop_->checkInLoopThread();
@@ -32,8 +32,8 @@ void XDIOEventLoopThreadPool::start(const XDIOEventLoopThreadInitCallBackPtr &cb
         threads_.push_back(t);
         loops_.push_back(t->startLoop());
     }
-    if (0 == numThread_ && cb.isValid()) {
-        cb->exec(baseLoop_);
+    if (0 == numThread_ && cb) {
+        cb(baseLoop_);
     }
 }
 
