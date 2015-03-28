@@ -12,7 +12,8 @@ SET(BASE_SOURCE mutex.cpp
                 event_loop_thread_pool.cpp
                 poller.cpp
                 channel.cpp
-                acceptor.cpp)
+                acceptor.cpp
+                tcp_server.cpp)
 IF(UNIX)
     MESSAGE("UNIX")
     SET(BASE_SOURCE ${BASE_SOURCE} 

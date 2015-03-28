@@ -20,8 +20,18 @@ typedef std::function<void(uint64)> XDIOEventReadCallBack;
 typedef std::function<void(FD, const XDIpv4Addr)> XDIOEventNewConnectionCallBack;
 // IOEventLoop thread init
 typedef std::function<void(XDIOEventLoop*)> XDIOEventLoopThreadInitCallBack;
+// connection state callback
+typedef std::function<void(const XDTcpConnectionPtr &)> XDIOEventConnectionCallBack;
+// message callback;
+typedef std::function<void(const XDTcpConnectionPtr &, XDBuffer *, uint64)> XDIOEventMessageCallBack;
+// write complete callback
+typedef std::function<void(const XDTcpConnectionPtr &)> XDIOEventWriteCompleteCallBack;
 
+// 关闭回调
+typedef std::function<void(const XDTcpConnectionPtr &> XDIOEventCloseCallBack;
 
+// 高水位标回调
+typedef std::function<void(const XDTcpConnectionPtr &> XDIOEventHighWateMarkCallBack;
 //class XDFunction : public XDShareable
 //{
 //public:

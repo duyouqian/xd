@@ -28,5 +28,6 @@
 #include "base_object.h"
 #include "channel.h"
 #include "acceptor.h"
+#include "tcp_server.h"
 
 #endif // end xd_common_h
