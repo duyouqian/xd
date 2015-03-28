@@ -7,7 +7,7 @@
 #include <string>
 #include <netinet/in.h>
 
-class XDIpv4AddrLinuxImp : XDNoncopyable
+class XDIpv4AddrLinuxImp //: public XDNoncopyable
 {
 public:
     XDIpv4AddrLinuxImp();

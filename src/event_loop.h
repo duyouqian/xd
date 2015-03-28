@@ -55,6 +55,7 @@ public:
 private:
     void doPendingFunctors();
     void printActiveChannels();
+    void weakupHandleRead(uint64 timestamp);
     void abortNotInLoopThread();
 private:
     uint32 threadID_;

@@ -6,6 +6,7 @@
 #include "callback.h"
 #include "socket_util.h"
 #include <algorithm>
+#include <functional>
 #include <sys/eventfd.h>
 
 __thread XDIOEventLoop* loopInThisThread = NULL;
@@ -20,28 +21,6 @@ FD createEventfd()
     }
     return fd;
 }
-
-class WakeupHandleRead : public XDIOEventCallBack
-{
-public:
-    explicit WakeupHandleRead(FD fd) : fd_(fd)
-    {
-    }
-    virtual ~WakeupHandleRead()
-    {
-    }
-    virtual bool readCallBack(uint64 timestamp)
-    {
-        XDLOG_minfo("[WakeupHandleRead] 有线程唤醒IOEventLoop线程");
-        uint64 one = 1;
-        int32 n = XDSocketOpt::read(fd_, &one, sizeof(one));
-        if (n != sizeof(one)) {
-            XDLOG_merror("[WakeupHandleRead] reads:%d bytes instead of 8", n);
-        }
-    }
-private:
-    FD fd_;
-};
 
 XDIOEventLoop* XDIOEventLoop::getEventLoopOfCurrentThread()
 {
@@ -65,8 +44,7 @@ XDIOEventLoop::XDIOEventLoop()
     } else {
         loopInThisThread = this;
     }
-    XDIOEventCallBackPtr wakeupHandRead(new WakeupHandleRead(wakeupFd_));
-    wakeupChannel_->setIOEventCallBack(wakeupHandRead);
+    wakeupChannel_->setReadCallBack(std::bind(&XDIOEventLoop::weakupHandleRead, this, std::placeholders::_1));
     wakeupChannel_->setEvent(XDIOEventType_READ, true);
 }
 
@@ -152,11 +130,11 @@ void XDIOEventLoop::wakeup()
     }
 }
 
-void XDIOEventLoop::runInLoop(const XDFunctionPtr &cb)
+void XDIOEventLoop::runInLoop(const XDIOEventCallBack &cb)
 {
     if (isInLoopThread()) {
-        if (cb.isValid()) {
-            cb->exec();
+        if (cb) {
+            cb();
         }
     } else {
         queueInLoop(cb);
@@ -213,6 +191,16 @@ void XDIOEventLoop::setContext(void *value)
 void* XDIOEventLoop::getContext()
 {
     return context_;
+}
+
+void XDIOEventLoop::weakupHandleRead(uint64 timestamp)
+{
+    XDLOG_minfo("[WakeupHandleRead] 有线程唤醒IOEventLoop线程");
+    uint64 one = 1;
+    int32 n = XDSocketOpt::read(wakeupFd_, &one, sizeof(one));
+    if (n != sizeof(one)) {
+        XDLOG_merror("[WakeupHandleRead] reads:%d bytes instead of 8", n);
+    }
 }
 
 void XDIOEventLoop::abortNotInLoopThread()

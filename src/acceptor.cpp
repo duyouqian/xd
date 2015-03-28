@@ -17,7 +17,7 @@ XDAcceptor::XDAcceptor(XDIOEventLoop *loop,
     acceptorSocket_.setReuseAddr(true);
     acceptorSocket_.setReusePort(reuseport);
     acceptorSocket_.bindAddress(&listenAddr);
-    acceptorChannel_.setReadCallBack(std::bind(&XDAcceptor::handRead, this));
+    acceptorChannel_.setReadCallBack(std::bind(&XDAcceptor::handRead, this, std::placeholders::_1));
 }
 
 XDAcceptor::~XDAcceptor()
@@ -40,7 +40,7 @@ void XDAcceptor::listen()
     acceptorChannel_.setEvent(XDIOEventType_READ, true);
 }
 
-void XDAcceptor::setNewConnectionCallBack(XDIOEventNewConnectionCallBack &cb)
+void XDAcceptor::setNewConnectionCallBack(const XDIOEventNewConnectionCallBack &cb)
 {
     newConnectionCallBack_ = cb;
 }

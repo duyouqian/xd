@@ -24,7 +24,7 @@ public:
     bool listenning() const;
     void listen();
     
-    void setNewConnectionCallBack(XDIOEventNewConnectionCallBack &cb);
+    void setNewConnectionCallBack(const XDIOEventNewConnectionCallBack &cb);
     
 private:
     void handRead(uint64 timestamp);

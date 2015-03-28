@@ -1,23 +1,17 @@
 #include "common.h"
 
-class IOEventLoopInitThread : public XDIOEventLoopThreadInitCallBack
-{
-public:
-    bool exec(XDIOEventLoop *loop)
+    void exec(XDIOEventLoop *loop)
     {
         XDLOG_minfo("[InitThread]");
-        return true;
     }
-};
 
 int main(int argc, char **argv)
 {
     XDLOG_open("log", 0);
-    XDIOEventLoopThreadInitCallBackPtr cb(new IOEventLoopInitThread());
     XDIOEventLoop loop;
     XDIOEventLoopThreadPool pool(&loop, "IOEventLoopThreadPool");
     pool.setNumThread(10);
-    pool.start(cb);
+    pool.start(std::bind(exec, std::placeholders::_1));
     loop.loop();
     //XDIOEventLoopThread thread(cb, "IOEventLoopThread");
     //XDIOEventLoop* loop = thread.startLoop();

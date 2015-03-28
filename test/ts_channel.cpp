@@ -1,14 +1,9 @@
 #include "common.h"
 
-class ReadCallBack : public XDIOEventCallBack
-{
-public:
-    bool readCallBack(uint64 timestamp)
+    void readCallBack(uint64 timestamp)
     {
         XDLOG_minfo("[ReadCallBack] time:%lu", timestamp);
-        return true;
     }
-};
 
 int main(int argc, char **argv)
 {
@@ -16,8 +11,7 @@ int main(int argc, char **argv)
     XDIOEventLoop loop_;
     XDChannel channel(&loop_, -1);
 
-    XDIOEventCallBackPtr readCb(new ReadCallBack());
-    channel.setIOEventCallBack(readCb);
+    channel.setReadCallBack(std::bind(readCallBack, std::placeholders::_1));
 
     // 设置事件
     channel.setEvent(XDIOEventType_READ, true);
