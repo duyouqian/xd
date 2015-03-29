@@ -2,12 +2,15 @@
 #define XD_EVENT_LOOP_THREAD_H
 
 #include "thread.h"
-#include "event_loop.h"
 #include "types.h"
 #include <string>
+#include <functional>
+
+class XDIOEventLoop;
 
 class XDIOEventLoopThread : public XDIRunnable
 {
+typedef std::function<void(XDIOEventLoop*)> XDIOEventLoopThreadInitCallBack;
 public:
     XDIOEventLoopThread(const XDIOEventLoopThreadInitCallBack &cb,
                         const char *name);

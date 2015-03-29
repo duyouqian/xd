@@ -2,19 +2,23 @@
 #define XD_TCP_SERVER_H
 
 #include "noncopyable.h"
-#include "callback.h"
+#include "tcp_connection.h"
 #include "inetaddr.h"
-#include "event_loop.h"
-#include "event_loop_thread_pool.h"
-#include "acceptor.h"
 #include "reference_count.h"
 #include "shared_pointer.h"
 #include "types.h"
+#include <functional>
+#include <map>
+
+class XDIOEventLoop;
+class XDIOEventLoopThreadPool;
+class XDAcceptor;
 
 class XDTcpServer : public XDNoncopyable
 {
+    typedef std::function<void(XDIOEventLoop*)> XDIOEventLoopThreadInitCallBack;
 public:
-    XDTcpServer(XDEventLoop *loop,
+    XDTcpServer(XDIOEventLoop *loop,
                 const XDIpv4Addr &addr,
                 const char *name,
                 bool isReuseport);

@@ -39,6 +39,11 @@ XDIpv4AddrLinuxImp::XDIpv4AddrLinuxImp(struct sockaddr_in& addr)
 {
 }
 
+XDIpv4AddrLinuxImp::XDIpv4AddrLinuxImp(struct sockaddr_in addr)
+                  : addr_(addr)
+{
+}
+
 std::string XDIpv4AddrLinuxImp::getIp() const
 {
     char buff[32];

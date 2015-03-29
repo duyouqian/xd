@@ -2,16 +2,18 @@
 #define XD_CHANNEL_H
 
 #include "noncopyable.h"
-//#include "event_loop.h"
-#include "callback.h"
 #include "shareable.h"
 #include "types.h"
 #include <string>
+#include <functional>
 
 class XDIOEventLoop;
 // 处理FD上的IO事件和改变
 class XDChannel : public XDShareable
 {
+public:
+    typedef std::function<void(uint64)> XDIOEventReadCallBack;
+    typedef std::function<void()> XDIOEventCallBack;
 public:
     XDChannel(XDIOEventLoop *loop,
               FD fd);

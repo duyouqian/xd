@@ -3,20 +3,18 @@
 
 #include "shareable.h"
 #include "socket.h"
-#include "socket_util.h"
-#include "inetaddr.h"
-#include "callback.h"
-#include "event_loop.h"
 #include "channel.h"
+#include "inetaddr.h"
 #include "types.h"
 
-class XDAcceptorHandleRead;
-class XDTcpServer;
+#include <functional>
+
+class XDIOEventLoop;
 
 class XDAcceptor : public XDShareable
 {
-    friend class XDAcceptorHandleRead;
-    friend class XDTcpServer;
+public:
+    typedef std::function<void(FD, const XDIpv4Addr&)> XDIOEventNewConnectionCallBack;
 public:
     XDAcceptor(XDIOEventLoop *loop, const XDIpv4Addr &listenAddr, bool reuseport);
     ~XDAcceptor();

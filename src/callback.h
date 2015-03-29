@@ -1,25 +1,25 @@
 #ifndef XD_CALLBACK_H
 #define XD_CALLBACK_H
 
-#include "shareable.h"
 #include "shared_pointer.h"
-#include "tcp_connection.h"
-#include "buffer.h"
 #include "inetaddr.h"
+#include "buffer.h"
 #include "types.h"
-
 #include <functional>
+#include <memory>
 
-class XDIOEventLoop;
+class XDTcpConnection;
+// typedef XDSharedPtr<XDTcpConnection> XDTcpConnectionPtr;
+typedef std::shared_ptr<XDTcpConnection> XDTcpConnectionPtr;
 
 // IOEvent
 typedef std::function<void()> XDIOEventCallBack;
 // IOEvent read
 typedef std::function<void(uint64)> XDIOEventReadCallBack;
 // IOEvent newConn
-typedef std::function<void(FD, const XDIpv4Addr)> XDIOEventNewConnectionCallBack;
+typedef std::function<void(FD, const XDIpv4Addr&)> XDIOEventNewConnectionCallBack;
 // IOEventLoop thread init
-typedef std::function<void(XDIOEventLoop*)> XDIOEventLoopThreadInitCallBack;
+//typedef std::function<void(XDIOEventLoop*)> XDIOEventLoopThreadInitCallBack;
 // connection state callback
 typedef std::function<void(const XDTcpConnectionPtr &)> XDIOEventConnectionCallBack;
 // message callback;
@@ -31,7 +31,11 @@ typedef std::function<void(const XDTcpConnectionPtr &)> XDIOEventWriteCompleteCa
 typedef std::function<void(const XDTcpConnectionPtr &)> XDIOEventCloseCallBack;
 
 // 高水位标回调
-typedef std::function<void(const XDTcpConnectionPtr &)> XDIOEventHighWateMarkCallBack;
+typedef std::function<void(const XDTcpConnectionPtr &, int32)> XDIOEventHighWateMarkCallBack;
+// 默认连接回调
+void defaultConnectionCallBack(const XDTcpConnectionPtr&);
+// 默认消息回调
+void defaultMessageCallBack(const XDTcpConnectionPtr&, XDBuffer *buff, uint64);
 //class XDFunction : public XDShareable
 //{
 //public:

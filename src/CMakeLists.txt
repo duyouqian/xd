@@ -13,7 +13,9 @@ SET(BASE_SOURCE mutex.cpp
                 poller.cpp
                 channel.cpp
                 acceptor.cpp
-                tcp_server.cpp)
+                buffer.cpp
+                tcp_server.cpp
+                tcp_connection.cpp)
 IF(UNIX)
     MESSAGE("UNIX")
     SET(BASE_SOURCE ${BASE_SOURCE} 

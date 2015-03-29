@@ -123,11 +123,11 @@ void XDSocketLinuxImp::shutdownWrite()
     XDSocketOpt::shutdownWrite(fd_);
 }
 
-void XDSocketLinuxImp::setTcpNoDelag(bool on)
+void XDSocketLinuxImp::setTcpNoDelay(bool on)
 {
     check(isValid());
     int32 optVal = on ? 1 : 0;
-    XDSocketOpt::setSockTcpNoDelag(fd_, &optVal, sizeof(optVal));
+    XDSocketOpt::setSockTcpNoDelay(fd_, &optVal, sizeof(optVal));
 }
 
 void XDSocketLinuxImp::setReuseAddr(bool on)

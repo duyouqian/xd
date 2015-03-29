@@ -61,3 +61,9 @@ TARGET_LINK_LIBRARIES(ts_eventloop xd)
 ADD_EXECUTABLE(ts_acceptor ts_acceptor.cpp)
 TARGET_LINK_LIBRARIES(ts_acceptor xd)
 
+ADD_EXECUTABLE(ts_server ts_server.cpp)
+TARGET_LINK_LIBRARIES(ts_server xd)
+
+ADD_EXECUTABLE(ts_func ts_func.cpp)
+TARGET_LINK_LIBRARIES(ts_func xd)
+

@@ -1,4 +1,5 @@
 #include "base_poll.h"
+#include "poller.h"
 #include "event_loop.h"
 #include "channel.h"
 #include "log.h"
@@ -32,7 +33,7 @@ XDEPoller::~XDEPoller()
 uint64 XDEPoller::poll(int32 timeoutMS,
                        std::vector<XDChannel*> *activeChannels)
 {
-    XDLOG_minfo("[EPoll] [POLL] 总共有%dchnnel", channels_.size());
+    //XDLOG_minfo("[EPoll] [POLL] 总共有%dchnnel", channels_.size());
     int32 numEvents = ::epoll_wait(epollfd_,
                                    &*events_.begin(),
                                    static_cast<int32>(events_.size()),
@@ -40,14 +41,14 @@ uint64 XDEPoller::poll(int32 timeoutMS,
     int saveErrno = errno;
     uint64 now = XDTimer::now();
     if (numEvents > 0) {
-        XDLOG_minfo("[EPoll] [POLL] 有事件发生");
+        //XDLOG_minfo("[EPoll] [POLL] 有事件发生");
         fillActiveChannels(numEvents, activeChannels);
         // 扩充接受事件容量
         if (static_cast<size_t>(numEvents) == events_.size()) {
             events_.resize(numEvents << 1);
         }
     } else if (numEvents == 0) {
-        XDLOG_minfo("[EPoll] [POLL] 没有任何事件发生");
+        //XDLOG_minfo("[EPoll] [POLL] 没有任何事件发生");
     } else {
         // 发生错误
         if (saveErrno != EINTR) {

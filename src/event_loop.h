@@ -3,18 +3,20 @@
 
 #include "noncopyable.h"
 #include "thread.h"
-#include "poller.h"
 #include "shared_pointer.h"
+#include "poller.h"
 #include "callback.h"
 #include "types.h"
 
 #include <vector>
+#include <functional>
 
 class XDChannel;
 
 // IO事件循环
 class XDIOEventLoop : public XDNoncopyable
 {
+typedef std::function<void()> XDFunction;
 public:
     XDIOEventLoop();
     ~XDIOEventLoop();
@@ -39,9 +41,9 @@ public:
     void *getContext();
     
     // 来自相同线程中运行
-    void runInLoop(const XDIOEventCallBack &cb);
+    void runInLoop(const XDFunction &cb);
     // 来自其他线程
-    void queueInLoop(const XDIOEventCallBack &cb);
+    void queueInLoop(const XDFunction &cb);
     // 判断是否在事件循环线程
     FORCEINLINE bool isInLoopThread()
     {
@@ -83,7 +85,7 @@ private:
     // mutex
     XDMutex mutex_;
     // 存储来自其他线程的处理器
-    std::vector<XDIOEventCallBack> pendingFunctors_;
+    std::vector<XDFunction> pendingFunctors_;
 };
 
 #endif // end xd_event_loop_h

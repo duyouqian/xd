@@ -30,7 +30,7 @@ public:
     int32 accept(XDIpv4Addr *addr);
     void shutdownWrite();
     // 设置开启/关闭 Nagle算法
-    void setTcpNoDelag(bool on);
+    void setTcpNoDelay(bool on);
     // 设置地址是否重用
     void setReuseAddr(bool on);
     // 设置端口是否重用

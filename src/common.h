@@ -2,9 +2,10 @@
 #define XD_COMMON_H
 
 #include "noncopyable.h"
+#include "base_object.h"
+#include "reference_count.h"
 #include "singleton.h"
 #include "error.h"
-#include "types.h"
 #include "mutex.h"
 #include "condition.h"
 #include "sema.h"
@@ -12,11 +13,9 @@
 #include "thread.h"
 #include "thread_group.h"
 #include "file.h"
-#include "log.h"
 #include "blocking_queue.h"
 #include "shareable.h"
 #include "shared_pointer.h"
-#include "callback.h"
 #include "event.h"
 #include "event_loop.h"
 #include "event_loop_thread.h"
@@ -24,10 +23,12 @@
 #include "poller.h"
 #include "socket.h"
 #include "inetaddr.h"
-#include "reference_count.h"
-#include "base_object.h"
 #include "channel.h"
 #include "acceptor.h"
+#include "callback.h"
+#include "log.h"
+#include "tcp_connection.h"
 #include "tcp_server.h"
+#include "types.h"
 
 #endif // end xd_common_h

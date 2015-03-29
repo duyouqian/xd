@@ -1,24 +1,33 @@
 #ifndef XD_TCP_CONNECTION_H
 #define XD_TCP_CONNECTION_H
 
+#include "noncopyable.h"
 #include "callback.h"
-#include "shareable.h"
-#include "shared_pointer.h"
+#include "socket.h"
+#include "inetaddr.h"
 #include "types.h"
 
+#include <string>
+#include <memory>
+
+class XDIOEventLoop;
+class XDChannel;
+
 // tcp 连接
-class XDTcpConnection : public XDShareable
+class XDTcpConnection : public XDNoncopyable,
+                        public std::enable_shared_from_this<XDTcpConnection>
 {
 public:
-    typedef XDSharedPtr<XDTcpConnection> XDTcpConnectionPtr;
+   // typedef XDSharedPtr<XDTcpConnection> XDTcpConnectionPtr;
+    typedef std::shared_ptr<XDTcpConnection> XDTcpConnectionPtr;
 public:
-    XDTcpConnection(XDIOEvenLoop *loop,
-                    std::string name,
+    explicit XDTcpConnection(XDIOEventLoop *loop,
+                    std::string& name,
                     SOCKET fd,
                     const XDIpv4Addr &localAddr,
                     const XDIpv4Addr &peerAddr);
     ~XDTcpConnection();
-    XDIOEvent* getLoop() const;
+    XDIOEventLoop* getLoop() const;
     const std::string& name() const;
     const XDIpv4Addr& localAddress() const;
     const XDIpv4Addr& peerAddress() const;
@@ -46,14 +55,16 @@ public:
     void* getMutableContext();
     
     // ioevent callback
-    void setConnectionCallback(const XDIOEventConnectionCallBack &cb);
-    void setMessageCallback(const XDIOEventMessageCallBack &cb);
-    void setWriteCompleteCallback(const XDIOEventWriteCompleteCallBack &cb);
-    void setHighWaterMarkCallback(const XDIOEventHighWateMarkCallBack &cb, int32 highWaterMark);
-    void setCloseCallback(const XDIOEventCloseCallBack &cb);
+    void setConnectionCallBack(const XDIOEventConnectionCallBack &cb);
+    void setMessageCallBack(const XDIOEventMessageCallBack &cb);
+    void setWriteCompleteCallBack(const XDIOEventWriteCompleteCallBack &cb);
+    void setHighWaterMarkCallBack(const XDIOEventHighWateMarkCallBack &cb, int32 highWaterMark);
+    void setCloseCallBack(const XDIOEventCloseCallBack &cb);
     
-    void connectEstablished();
+    void connectEsEntablished();
     void connectDestroyed();
+
+    //void setSelf(const XDTcpConnectionPtr &self);
 
 private:
     enum XDState {state_disconnected, state_connecting, state_connected, state_disconnecting};
@@ -70,7 +81,7 @@ private:
     void handleClose();
 private:
     std::string name_;
-    XDIOEventLoop loop_;
+    XDIOEventLoop *loop_;
     XDState state_;
     XDSharedPtr<XDSocket> socket_;
     XDSharedPtr<XDChannel> channel_;
@@ -93,7 +104,8 @@ private:
     // context
     void *context_;
 
-    XDTcpConnectionPtr self_;
+    //XDTcpConnectionPtr self_;
 };
+
 
 #endif // end xd_tcp_connection_h

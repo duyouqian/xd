@@ -1,4 +1,6 @@
 #include "event_loop_thread_pool.h"
+#include "event_loop.h"
+#include "event_loop_thread.h"
 #include <stdio.h>
 
 XDIOEventLoopThreadPool::XDIOEventLoopThreadPool(XDIOEventLoop *baseLoop,

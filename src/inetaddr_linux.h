@@ -14,6 +14,7 @@ public:
     explicit XDIpv4AddrLinuxImp(uint16 port, bool loopbackOnly = false);
     XDIpv4AddrLinuxImp(const char *ip, uint16 port);
     explicit XDIpv4AddrLinuxImp(struct sockaddr_in& addr);
+    explicit XDIpv4AddrLinuxImp(struct sockaddr_in addr);
     ~XDIpv4AddrLinuxImp();
 
     std::string getIp() const;

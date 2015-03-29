@@ -194,7 +194,7 @@ bool XDSocketOpt::peek(SOCKET fd)
     return ret > 0;
 }
 
-void XDSocketOpt::setSockTcpNoDelag(SOCKET fd, const void *optval, int32 optlen)
+void XDSocketOpt::setSockTcpNoDelay(SOCKET fd, const void *optval, int32 optlen)
 {
     int32 ret = ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, optval, static_cast<socklen_t>(optlen));
     if (-1 == ret) {

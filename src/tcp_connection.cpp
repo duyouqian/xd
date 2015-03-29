@@ -2,14 +2,26 @@
 #include "log.h"
 #include "event_loop.h"
 #include "channel.h"
-#include "inetaddr.h"
 #include "socket.h"
-#include "socket.h"
+#include "socket_util.h"
 
 #include <functional>
 
-XDTcpConnection::XDTcpConnection(XDIOEvenLoop *loop,
-                                 std::string name,
+void defaultConnectionCallBack(const XDTcpConnectionPtr &conn)
+{
+    XDLOG_minfo("[TcpConnection] 新连接:%s -> %s is %s", conn->localAddress().getIpAndPort().c_str(), conn->peerAddress().getIpAndPort().c_str(), (conn->connected() ? "UP" : "DOWN"));
+}
+
+void defaultMessageCallBack(const XDTcpConnectionPtr &conn, XDBuffer *buffer, uint64 timestamp)
+{
+    uint32 len = buffer->readableBytes();
+    std::string msg = buffer->retrieveAsString(len);
+    XDLOG_minfo("[TcpConnection] 消息:%s -> %s msg: %s", conn->localAddress().getIpAndPort().c_str(), conn->peerAddress().getIpAndPort().c_str(), msg.c_str());
+}
+
+
+XDTcpConnection::XDTcpConnection(XDIOEventLoop *loop,
+                                 std::string& name,
                                  SOCKET fd,
                                  const XDIpv4Addr &localAddr,
                                  const XDIpv4Addr &peerAddr)
@@ -34,7 +46,7 @@ XDTcpConnection::XDTcpConnection(XDIOEvenLoop *loop,
 
 XDTcpConnection::~XDTcpConnection()
 {
-    XDLOG_mdebug("[TcpConnection] delete [%s] at fd=%d state=%s", name_.c_str(), channel_->fd(), stateToStr());
+    XDLOG_mdebug("[TcpConnection] delete [%s] at fd=%d state=%s ", name_.c_str(), channel_->fd(), stateToStr());
     check(state_ == state_disconnected);
 }
 
@@ -93,28 +105,28 @@ XDBuffer* XDTcpConnection::getInputBuffer()
     return &inputBuffer_;
 }
 
-void XDTcpConnection::setConnectionCallback(const XDIOEventConnectionCallBack &cb)
+void XDTcpConnection::setConnectionCallBack(const XDIOEventConnectionCallBack &cb)
 {
     connectionCallBack_ = cb;
 }
 
-void XDTcpConnection::setMessageCallback(const XDIOEventMessageCallBack &cb)
+void XDTcpConnection::setMessageCallBack(const XDIOEventMessageCallBack &cb)
 {
     messageCallBack_ = cb;
 }
 
-void XDTcpConnection::setWriteCompleteCallback(const XDIOEventWriteCompleteCallBack &cb)
+void XDTcpConnection::setWriteCompleteCallBack(const XDIOEventWriteCompleteCallBack &cb)
 {
     writeCompleteCallBack_ = cb;
 }
 
-void XDTcpConnection::setHighWaterMarkCallback(const XDIOEventHighWateMarkCallBack &cb, int32 highWaterMark)
+void XDTcpConnection::setHighWaterMarkCallBack(const XDIOEventHighWateMarkCallBack &cb, int32 highWaterMark)
 {
     highWateMarkCallBack_ = cb;
     highWaterMark_ = highWaterMark;
 }
 
-void XDTcpConnection::setCloseCallback(const XDIOEventCloseCallBack &cb)
+void XDTcpConnection::setCloseCallBack(const XDIOEventCloseCallBack &cb)
 {
     closeCallBack_ = cb;
 }
@@ -124,22 +136,30 @@ void XDTcpConnection::setTcpNoDelay(bool on)
     socket_->setTcpNoDelay(on);
 }
 
-void XDTcpConnection::connectEstablished()
+void XDTcpConnection::connectEsEntablished()
 {
     loop_->checkInLoopThread();
     check(state_connecting == state_);
     setState(state_connected);
     channel_->setEvent(XDIOEventType_READ, true);
-    connectionCallBack_(self_);
+    //connectionCallBack_(self_);
+    connectionCallBack_(shared_from_this());
 }
+
+//void XDTcpConnection::setSelf(const XDTcpConnectionPtr &self)
+//{
+//    self_ = self;
+//}
 
 void XDTcpConnection::connectDestroyed()
 {
     loop_->checkInLoopThread();
+    XDLOG_minfo("[TcpConnection] destroy");
     if (state_connected == state_) {
         setState(state_connected);
         channel_->disableAll();
-        connectionCallback_(self_);
+        //connectionCallBack_(self_);
+        connectionCallBack_(shared_from_this());
     }
     channel_->remove();
 }
@@ -150,7 +170,7 @@ void XDTcpConnection::send(const void *message, int32 len)
         if (loop_->isInLoopThread()) {
             sendInLoop(message, len);
         } else {
-            loop_->queueInLoop(std::bind(&XDTcpConnection::sendInLoop, this, message, len))
+            loop_->queueInLoop(std::bind(&XDTcpConnection::sendInLoop, this, message, len));
         }
     }
 }
@@ -161,7 +181,7 @@ void XDTcpConnection::sendInLoop(const void *message, int32 len)
     int32 nwrote = 0;
     int32 remaining = len;
     bool faultError = false;
-    if (state_ == state_connected) {
+    if (state_ == state_disconnected) {
         XDLOG_merror("[TcpConnection] 连接已经关闭, 无法发送");
         return;
     }
@@ -173,7 +193,8 @@ void XDTcpConnection::sendInLoop(const void *message, int32 len)
             remaining = len - nwrote;
             if (0 == remaining && writeCompleteCallBack_) {
                 // 发送完毕
-                loop_->queueInLoop(std::bind(writeCompleteCallBack_, self_));
+               // loop_->queueInLoop(std::bind(writeCompleteCallBack_, self_));
+                loop_->queueInLoop(std::bind(writeCompleteCallBack_, shared_from_this()));
             }
         } else {
             nwrote = 0;
@@ -193,9 +214,10 @@ void XDTcpConnection::sendInLoop(const void *message, int32 len)
         if (oldLen + remaining >= highWaterMark_ &&
             oldLen < highWaterMark_ &&
             highWateMarkCallBack_) {
-            loop_->queueInLoop(std::bind(highWateMarkCallBack_, self_, oldLen + remaining));
+            //loop_->queueInLoop(std::bind(highWateMarkCallBack_, self_, oldLen + remaining));
+            loop_->queueInLoop(std::bind(highWateMarkCallBack_, shared_from_this(), oldLen + remaining));
         }
-        outputBuffer_.append(static_cast<const char*>message + nwrote, remaining);
+        outputBuffer_.append(static_cast<const char*>(message) + nwrote, remaining);
         if (!channel_->isWriting()) {
             channel_->setEvent(XDIOEventType_WRITE, true);
         }
@@ -265,10 +287,11 @@ void XDTcpConnection::handleRead(uint64 timestamp)
 {
     loop_->checkInLoopThread();
     int32 error = 0;
-    int32 n = inputBuffer_->readFD(channel_->fd(), &error);
+    int32 n = inputBuffer_.readFD(channel_->fd(), &error);
     if (n > 0) {
         // have message
-        messageCallback_(self_, &inputBuffer_, timestamp);
+       // messageCallBack_(self_, &inputBuffer_, timestamp);
+        messageCallBack_(shared_from_this(), &inputBuffer_, timestamp);
     } else if (n == 0) {
         // close
         handleClose();
@@ -276,7 +299,7 @@ void XDTcpConnection::handleRead(uint64 timestamp)
         // error
         errno = error;
         XDLOG_merror("[TcpConnection] handleRead error");
-        handError();
+        handleError();
     }
 }
 
@@ -291,9 +314,10 @@ void XDTcpConnection::handleWrite()
             if (0 == outputBuffer_.readableBytes()) {
                 channel_->setEvent(XDIOEventType_WRITE, false);
                 if (writeCompleteCallBack_) {
-                    loop_->queueInLoop(std::bind(writeCompleteCallBack_, self_));
+                    //loop_->queueInLoop(std::bind(writeCompleteCallBack_, self_));
+                    loop_->queueInLoop(std::bind(writeCompleteCallBack_, shared_from_this()));
                 }
-                if (state_ == disconnecting) {
+                if (state_ == state_disconnecting) {
                     shutdownInLoop();
                 }
             }
@@ -308,17 +332,18 @@ void XDTcpConnection::handleWrite()
 void XDTcpConnection::handleClose()
 {
     loop_->checkInLoopThread();
-    XDLOG_minfo("[TcpConnection] fd=%d state=%s", channel_->fd(), stateToStr());
+    XDLOG_minfo("[TcpConnection] close fd=%d state=%s", channel_->fd(), stateToStr());
     check(state_ == state_connected || state_ == state_disconnecting);
     setState(state_disconnected);
     channel_->disableAll();
-    XDTcpConnectionPtr guardThis(self_);
-    connectionCallback_(guardThis);
-    closeCallback_(guardThis);
+    //XDTcpConnectionPtr guardThis(self_);
+    XDTcpConnectionPtr guardThis(shared_from_this());
+    connectionCallBack_(guardThis);
+    closeCallBack_(guardThis);
 }
 
 void XDTcpConnection::handleError()
 {
     int32 err = XDSocketOpt::getSockError(channel_->fd());
-    XDLOG_merror("[TcpConnection] handleError [%s] - SO_ERROR = %d:%s", name_->c_str(), err, strerror(err));
+    XDLOG_merror("[TcpConnection] handleError [%s] - SO_ERROR = %d:%s", name_.c_str(), err, strerror(err));
 }

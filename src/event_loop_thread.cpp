@@ -1,4 +1,5 @@
 #include "event_loop_thread.h"
+#include "event_loop.h"
 #include "log.h"
 
 XDIOEventLoopThread::XDIOEventLoopThread(const XDIOEventLoopThreadInitCallBack &cb,

@@ -1,6 +1,5 @@
 #include "log.h"
 #include "timer.h"
-#include "poller.h"
 #include "channel.h"
 #include "event_loop.h"
 #include "callback.h"
@@ -130,18 +129,16 @@ void XDIOEventLoop::wakeup()
     }
 }
 
-void XDIOEventLoop::runInLoop(const XDIOEventCallBack &cb)
+void XDIOEventLoop::runInLoop(const XDFunction &cb)
 {
     if (isInLoopThread()) {
-        if (cb) {
-            cb();
-        }
+        cb();
     } else {
         queueInLoop(cb);
     }
 }
 
-void XDIOEventLoop::queueInLoop(const XDIOEventCallBack &cb)
+void XDIOEventLoop::queueInLoop(const XDFunction &cb)
 {
     {
         XDGuardMutex lock(&mutex_);
@@ -164,7 +161,7 @@ void XDIOEventLoop::printActiveChannels()
 
 void XDIOEventLoop::doPendingFunctors()
 {
-    std::vector<XDIOEventCallBack> temp;
+    std::vector<XDFunction> temp;
     callingPendingFunctors_ = true;
     {
         XDGuardMutex lock(&mutex_);

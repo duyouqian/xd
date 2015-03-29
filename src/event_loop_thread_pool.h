@@ -2,15 +2,19 @@
 #define XD_EVENT_LOOP_THREAD_POOL_H
 
 #include "noncopyable.h"
-#include "callback.h"
 #include "shareable.h"
-#include "event_loop_thread.h"
 #include "types.h"
 #include <string>
 #include <vector>
+#include <functional>
+
+class XDIOEventLoop;
+class XDIOEventLoopThread;
 
 class XDIOEventLoopThreadPool : public XDShareable
 {
+public:
+    typedef std::function<void(XDIOEventLoop*)> XDIOEventLoopThreadInitCallBack;
 public:
     XDIOEventLoopThreadPool(XDIOEventLoop *baseLoop,
                             const char *name);
