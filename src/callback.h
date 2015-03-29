@@ -28,10 +28,10 @@ typedef std::function<void(const XDTcpConnectionPtr &, XDBuffer *, uint64)> XDIO
 typedef std::function<void(const XDTcpConnectionPtr &)> XDIOEventWriteCompleteCallBack;
 
 // 关闭回调
-typedef std::function<void(const XDTcpConnectionPtr &> XDIOEventCloseCallBack;
+typedef std::function<void(const XDTcpConnectionPtr &)> XDIOEventCloseCallBack;
 
 // 高水位标回调
-typedef std::function<void(const XDTcpConnectionPtr &> XDIOEventHighWateMarkCallBack;
+typedef std::function<void(const XDTcpConnectionPtr &)> XDIOEventHighWateMarkCallBack;
 //class XDFunction : public XDShareable
 //{
 //public:

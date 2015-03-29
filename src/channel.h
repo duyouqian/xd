@@ -46,6 +46,8 @@ public:
     const int32 events() const;
     void setRevents(int32 value);
     
+    bool isWriting() const;
+    
     std::string reventsToString() const;
     std::string eventsToString() const;
 

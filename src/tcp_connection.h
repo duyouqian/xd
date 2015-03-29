@@ -31,11 +31,38 @@ public:
     
     // send
     void send(const void *message, int32 len);
-    void send(XDBuffer *message);
+    //void send(XDBuffer *message);
+    XDBuffer* getOutputBuffer();
+    XDBuffer* getInputBuffer();
+    
     void shutdown();
+    void forceClose();
+    //void forceCloseWithDelay(uint32 seconds);
+    void setTcpNoDelay(bool on);
+    
+    // context
+    void setContext(void *context);
+    const void* getContext() const;
+    void* getMutableContext();
+    
+    // ioevent callback
+    void setConnectionCallback(const XDIOEventConnectionCallBack &cb);
+    void setMessageCallback(const XDIOEventMessageCallBack &cb);
+    void setWriteCompleteCallback(const XDIOEventWriteCompleteCallBack &cb);
+    void setHighWaterMarkCallback(const XDIOEventHighWateMarkCallBack &cb, int32 highWaterMark);
+    void setCloseCallback(const XDIOEventCloseCallBack &cb);
+    
+    void connectEstablished();
+    void connectDestroyed();
 
 private:
-    enum XDState {disconnected, connecting, connected, disconnecting};
+    enum XDState {state_disconnected, state_connecting, state_connected, state_disconnecting};
+    //
+    void sendInLoop(const void *message, int32 len);
+    void shutdownInLoop();
+    void forceCloseInLoop();
+    void setState(XDState state);
+    const char *stateToStr() const;
     // io 事件处理
     void handleRead(uint64 timestamp);
     void handleWrite();

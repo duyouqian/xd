@@ -154,6 +154,11 @@ XDIOEventLoop* XDChannel::ownerLoop()
     return loop_;
 }
 
+bool XDChannel::isWriting() const
+{
+    return event_ & XDIOEventType_WRITE;
+}
+
 std::string XDChannel::reventsToString() const
 {
     return eventsToString(fd_, revent_);
